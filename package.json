@@ -12,8 +12,11 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.132.0",
     "@astrojs/sitemap": "^3.7.4",
-    "astro": "^7.3.6"
+    "@astrojs/vercel": "^11.0.12",
+    "astro": "^7.3.6",
+    "resend": "^6.32.1"
   },
   "allowScripts": {
     "esbuild": true

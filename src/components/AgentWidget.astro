@@ -1,0 +1,549 @@
+---
+import { GREETING } from '../lib/agent-prompt';
+
+/**
+ * The contact agent: a blue orb bottom-right that opens a small chat panel.
+ *
+ * This is the only client-side JavaScript on the site — deliberately vanilla,
+ * with no UI framework, so one component doesn't put a runtime on every page.
+ *
+ * It replaces a `mailto:` link. Jarrett's address is never in this markup or
+ * the bundle; the panel POSTs to /api/agent, which holds the address
+ * server-side. See the security note in src/consts.ts.
+ */
+---
+
+<div class="agent" data-agent>
+	<button
+		type="button"
+		class="agent__orb"
+		data-agent-open
+		aria-label="Open chat with Jarrett's agent"
+		aria-expanded="false"
+		aria-controls="agent-panel"
+	>
+		<!-- Swirl: a white arc spiralling out of a blue field. Decorative, so
+		     hidden from assistive tech — the button's label carries the meaning. -->
+		<svg
+			class="agent__swirl"
+			viewBox="0 0 48 48"
+			aria-hidden="true"
+			focusable="false"
+		>
+			<defs>
+				<radialGradient id="agent-field" cx="34%" cy="28%" r="78%">
+					<stop offset="0%" stop-color="var(--agent-blue-lift)" />
+					<stop offset="58%" stop-color="var(--agent-blue)" />
+					<stop offset="100%" stop-color="var(--agent-blue-deep)" />
+				</radialGradient>
+			</defs>
+			<circle cx="24" cy="24" r="24" fill="url(#agent-field)" />
+			<!-- Two offset arcs read as a spiral without needing a path spline. -->
+			<path
+				d="M24 9a15 15 0 1 1-15 15"
+				fill="none"
+				stroke="var(--agent-on-blue)"
+				stroke-width="3.25"
+				stroke-linecap="round"
+				opacity="0.95"
+			/>
+			<path
+				d="M24 16a8 8 0 1 0 8 8"
+				fill="none"
+				stroke="var(--agent-on-blue)"
+				stroke-width="3.25"
+				stroke-linecap="round"
+				opacity="0.75"
+			/>
+			<circle cx="24" cy="24" r="2.5" fill="var(--agent-on-blue)" />
+		</svg>
+	</button>
+
+	<div
+		class="agent__panel"
+		id="agent-panel"
+		data-agent-panel
+		role="dialog"
+		aria-modal="false"
+		aria-label="Chat with Jarrett's agent"
+		hidden
+	>
+		<div class="agent__head">
+			<span class="meta agent__title">Jarrett's agent</span>
+			<button
+				type="button"
+				class="agent__close"
+				data-agent-close
+				aria-label="Close chat"
+			>
+				<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+					<path
+						d="M3.5 3.5l9 9m0-9l-9 9"
+						stroke="currentColor"
+						stroke-width="1.75"
+						stroke-linecap="round"
+						fill="none"
+					/>
+				</svg>
+			</button>
+		</div>
+
+		<!-- Replies land here; polite so a screen reader isn't interrupted
+		     mid-sentence while the visitor is still typing. -->
+		<div class="agent__log" data-agent-log aria-live="polite" aria-atomic="false">
+		</div>
+
+		<form class="agent__form" data-agent-form>
+			<label class="visually-hidden" for="agent-input">Your message</label>
+			<input
+				class="agent__input"
+				id="agent-input"
+				data-agent-input
+				type="text"
+				autocomplete="off"
+				maxlength="1500"
+				placeholder="Type a message…"
+				required
+			/>
+			<button class="agent__send" type="submit" data-agent-send>
+				<span class="visually-hidden">Send message</span>
+				<svg viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+					<path
+						d="M2 8h11m0 0l-4.5-4.5M13 8l-4.5 4.5"
+						stroke="currentColor"
+						stroke-width="1.75"
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						fill="none"
+					/>
+				</svg>
+			</button>
+		</form>
+	</div>
+</div>
+
+<script is:inline define:vars={{ GREETING }}>
+	(() => {
+		const root = document.querySelector('[data-agent]');
+		if (!root) return;
+
+		const orb = root.querySelector('[data-agent-open]');
+		const panel = root.querySelector('[data-agent-panel]');
+		const closeBtn = root.querySelector('[data-agent-close]');
+		const log = root.querySelector('[data-agent-log]');
+		const form = root.querySelector('[data-agent-form]');
+		const input = root.querySelector('[data-agent-input]');
+		const sendBtn = root.querySelector('[data-agent-send]');
+
+		const SEEN_KEY = 'jh-agent-greeted';
+		/** Mirrors MAX_HISTORY_MESSAGES in src/pages/api/agent.ts. */
+		const MAX_TURNS = 12;
+
+		/** Conversation sent to the server each turn; the API is stateless. */
+		const history = [];
+		let busy = false;
+
+		/* localStorage throws in Safari private mode and when cookies are
+		   blocked — degrade to "treat as first visit" rather than crashing. */
+		const store = {
+			get(key) {
+				try {
+					return localStorage.getItem(key);
+				} catch {
+					return null;
+				}
+			},
+			set(key, value) {
+				try {
+					localStorage.setItem(key, value);
+				} catch {
+					/* non-fatal */
+				}
+			},
+		};
+
+		function addBubble(role, text) {
+			const row = document.createElement('div');
+			row.className = `agent__row agent__row--${role}`;
+
+			const bubble = document.createElement('p');
+			bubble.className = 'agent__bubble';
+			// textContent, never innerHTML — this renders model output and
+			// visitor input.
+			bubble.textContent = text;
+
+			row.append(bubble);
+			log.append(row);
+			log.scrollTop = log.scrollHeight;
+			return bubble;
+		}
+
+		function setBusy(state) {
+			busy = state;
+			input.disabled = state;
+			sendBtn.disabled = state;
+			panel.dataset.busy = state ? 'true' : 'false';
+		}
+
+		function open() {
+			panel.hidden = false;
+			orb.setAttribute('aria-expanded', 'true');
+			root.dataset.open = 'true';
+
+			if (!store.get(SEEN_KEY)) {
+				addBubble('agent', GREETING);
+				history.push({ role: 'assistant', content: GREETING });
+				store.set(SEEN_KEY, '1');
+			}
+			input.focus();
+		}
+
+		function close() {
+			panel.hidden = true;
+			orb.setAttribute('aria-expanded', 'false');
+			root.dataset.open = 'false';
+			orb.focus(); // return focus where the user left it
+		}
+
+		orb.addEventListener('click', () => {
+			panel.hidden ? open() : close();
+		});
+		closeBtn.addEventListener('click', close);
+
+		document.addEventListener('keydown', (event) => {
+			if (event.key === 'Escape' && !panel.hidden) close();
+		});
+
+		/* Focus trap: the panel is a non-modal dialog, so the page stays
+		   usable — but while it's open, Tab should cycle within it. */
+		panel.addEventListener('keydown', (event) => {
+			if (event.key !== 'Tab') return;
+			const focusable = [closeBtn, input, sendBtn].filter(
+				(el) => el && !el.disabled,
+			);
+			if (focusable.length === 0) return;
+			const first = focusable[0];
+			const last = focusable[focusable.length - 1];
+			if (event.shiftKey && document.activeElement === first) {
+				event.preventDefault();
+				last.focus();
+			} else if (!event.shiftKey && document.activeElement === last) {
+				event.preventDefault();
+				first.focus();
+			}
+		});
+
+		form.addEventListener('submit', async (event) => {
+			event.preventDefault();
+			if (busy) return;
+
+			const text = input.value.trim();
+			if (!text) return;
+
+			if (history.length >= MAX_TURNS) {
+				addBubble(
+					'error',
+					"This conversation has gotten long — reload the page to start fresh.",
+				);
+				return;
+			}
+
+			addBubble('you', text);
+			history.push({ role: 'user', content: text });
+			input.value = '';
+			setBusy(true);
+
+			const pending = addBubble('agent', '…');
+
+			try {
+				const response = await fetch('/api/agent', {
+					method: 'POST',
+					headers: { 'content-type': 'application/json' },
+					body: JSON.stringify({ messages: history }),
+				});
+
+				const data = await response.json().catch(() => ({}));
+
+				if (!response.ok) {
+					// Surface the server's message when it gave one — a chat UI
+					// that fails silently is worse than no chat UI.
+					pending.closest('.agent__row').remove();
+					addBubble(
+						'error',
+						data.error ||
+							'Something went wrong — try again, or reach Jarrett on LinkedIn.',
+					);
+					return;
+				}
+
+				pending.textContent = data.reply;
+				history.push({ role: 'assistant', content: data.reply });
+			} catch {
+				pending.closest('.agent__row').remove();
+				addBubble(
+					'error',
+					"Couldn't reach the agent — check your connection, or reach Jarrett on LinkedIn.",
+				);
+			} finally {
+				setBusy(false);
+				if (!panel.hidden) input.focus();
+			}
+		});
+
+		/* First visit: open unprompted with the greeting. Later visits wait to
+		   be clicked — an auto-opening panel on every visit is an annoyance. */
+		if (!store.get(SEEN_KEY)) {
+			// Let the page paint first so the panel doesn't fight first render.
+			window.setTimeout(open, 900);
+		}
+	})();
+</script>
+
+<style>
+	.agent {
+		position: fixed;
+		right: var(--s-5);
+		bottom: var(--s-5);
+		z-index: 50;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: var(--s-3);
+	}
+
+	/* ---- Orb -------------------------------------------------------------- */
+
+	.agent__orb {
+		width: var(--agent-orb-size);
+		height: var(--agent-orb-size);
+		padding: 0;
+		border: 0;
+		border-radius: 50%;
+		background: transparent;
+		cursor: pointer;
+		box-shadow: var(--agent-shadow);
+		transition: transform var(--dur) var(--ease);
+		order: 2; /* orb sits below the panel */
+	}
+
+	.agent__orb:hover {
+		transform: translateY(-2px) scale(1.04);
+	}
+
+	.agent__swirl {
+		width: 100%;
+		height: 100%;
+		border-radius: 50%;
+		display: block;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.agent[data-open='false'] .agent__swirl,
+		.agent:not([data-open]) .agent__swirl {
+			animation: agent-turn 14s linear infinite;
+		}
+	}
+
+	@keyframes agent-turn {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	/* ---- Panel ------------------------------------------------------------ */
+
+	.agent__panel {
+		order: 1;
+		width: var(--agent-panel-w);
+		max-width: calc(100vw - 2 * var(--s-5));
+		display: flex;
+		flex-direction: column;
+		background: var(--agent-panel-bg);
+		border: var(--hairline) solid var(--c-rule);
+		border-radius: calc(var(--radius) * 3);
+		box-shadow: var(--agent-shadow);
+		overflow: hidden;
+	}
+
+	.agent__panel[hidden] {
+		display: none;
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.agent__panel:not([hidden]) {
+			animation: agent-in var(--dur) var(--ease);
+		}
+	}
+
+	@keyframes agent-in {
+		from {
+			opacity: 0;
+			transform: translateY(8px);
+		}
+	}
+
+	.agent__head {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--s-3);
+		padding: var(--s-3) var(--s-3) var(--s-3) var(--s-4);
+		border-bottom: var(--hairline) solid var(--c-rule);
+	}
+
+	.agent__title {
+		color: var(--c-ink);
+	}
+
+	.agent__close {
+		display: grid;
+		place-items: center;
+		width: 1.75rem;
+		height: 1.75rem;
+		padding: 0;
+		border: 0;
+		border-radius: var(--radius);
+		background: transparent;
+		color: var(--c-ink-muted);
+		cursor: pointer;
+	}
+
+	.agent__close:hover {
+		background: var(--agent-bubble-them);
+		color: var(--c-ink);
+	}
+
+	.agent__close svg {
+		width: 0.9rem;
+		height: 0.9rem;
+	}
+
+	/* ---- Log -------------------------------------------------------------- */
+
+	.agent__log {
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-2);
+		padding: var(--s-4);
+		/* Tall enough to hold a short exchange, short enough not to dominate
+		   a laptop viewport. */
+		max-height: min(22rem, 50vh);
+		overflow-y: auto;
+		overscroll-behavior: contain;
+	}
+
+	.agent__row {
+		display: flex;
+	}
+
+	.agent__row--you {
+		justify-content: flex-end;
+	}
+
+	.agent__bubble {
+		max-width: 85%;
+		padding: var(--s-2) var(--s-3);
+		border-radius: calc(var(--radius) * 4);
+		font-size: var(--t-sm);
+		line-height: var(--lh-snug);
+		white-space: pre-wrap;
+		overflow-wrap: anywhere;
+	}
+
+	.agent__row--agent .agent__bubble {
+		background: var(--agent-bubble-them);
+		color: var(--c-ink);
+		border-bottom-left-radius: var(--radius);
+	}
+
+	.agent__row--you .agent__bubble {
+		background: var(--agent-bubble-you);
+		color: var(--agent-on-blue);
+		border-bottom-right-radius: var(--radius);
+	}
+
+	.agent__row--error .agent__bubble {
+		background: transparent;
+		border: var(--hairline) solid var(--c-rule-strong);
+		color: var(--c-ink-muted);
+		max-width: 100%;
+	}
+
+	/* ---- Form ------------------------------------------------------------- */
+
+	.agent__form {
+		display: flex;
+		align-items: center;
+		gap: var(--s-2);
+		padding: var(--s-3);
+		border-top: var(--hairline) solid var(--c-rule);
+	}
+
+	.agent__input {
+		flex: 1;
+		min-width: 0;
+		padding: var(--s-2) var(--s-3);
+		font: inherit;
+		font-size: var(--t-sm);
+		color: var(--c-ink);
+		background: var(--c-bg);
+		border: var(--hairline) solid var(--c-rule);
+		border-radius: calc(var(--radius) * 4);
+	}
+
+	.agent__input::placeholder {
+		color: var(--c-ink-faint);
+	}
+
+	.agent__input:disabled {
+		opacity: 0.6;
+	}
+
+	.agent__send {
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 2rem;
+		height: 2rem;
+		padding: 0;
+		border: 0;
+		border-radius: 50%;
+		background: var(--agent-blue);
+		color: var(--agent-on-blue);
+		cursor: pointer;
+	}
+
+	.agent__send:disabled {
+		opacity: 0.5;
+		cursor: default;
+	}
+
+	.agent__send svg {
+		width: 0.9rem;
+		height: 0.9rem;
+	}
+
+	/* ---- Mobile ----------------------------------------------------------- */
+
+	@media (max-width: 30rem) {
+		.agent {
+			right: var(--s-4);
+			bottom: var(--s-4);
+			left: var(--s-4);
+			align-items: stretch;
+		}
+
+		.agent__orb {
+			align-self: flex-end;
+		}
+
+		.agent__panel {
+			width: 100%;
+			max-width: none;
+		}
+
+		.agent__log {
+			max-height: 60vh;
+		}
+	}
+</style>

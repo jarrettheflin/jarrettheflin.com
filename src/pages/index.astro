@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
 import WorkGrid from '../components/WorkGrid.astro';
 import Footer from '../components/Footer.astro';
+import AgentWidget from '../components/AgentWidget.astro';
 ---
 
 <Base>
@@ -11,4 +12,7 @@ import Footer from '../components/Footer.astro';
 		<WorkGrid />
 	</main>
 	<Footer />
+
+	{/* Homepage only — the project pages stay free of client-side JS. */}
+	<AgentWidget />
 </Base>

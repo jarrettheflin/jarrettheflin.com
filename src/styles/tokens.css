@@ -87,6 +87,22 @@
 	--dur-fast: 120ms;
 	--dur: 220ms;
 	--dur-slow: 420ms;
+
+	/* ---- Agent widget ----------------------------------------------------
+	   The blue is a deliberate break from the warm palette above: a chat
+	   affordance has to read as "interactive control", not "page content".
+	   To fold it into the palette instead, point --agent-blue at --c-accent. */
+	--agent-blue: #1d4ed8;
+	--agent-blue-deep: #0b2a8a;
+	--agent-blue-lift: #5b8bf7;
+	--agent-on-blue: #ffffff;
+
+	--agent-orb-size: 3.5rem;
+	--agent-panel-w: 22rem;
+	--agent-panel-bg: var(--c-bg-raised);
+	--agent-bubble-them: #eef1f8;
+	--agent-bubble-you: var(--agent-blue);
+	--agent-shadow: 0 6px 28px -8px rgb(11 42 138 / 0.35);
 }
 
 /* ---- Color: dark --------------------------------------------------------
@@ -103,5 +119,13 @@
 		--c-accent: #ef7a4e;
 		--c-accent-ink: #1a1013;
 		--c-focus: #7cb0ef;
+
+		/* Agent widget — lifted so the orb stays legible on a dark ground. */
+		--agent-blue: #3b6ef0;
+		--agent-blue-deep: #16307e;
+		--agent-blue-lift: #8fb4ff;
+		--agent-on-blue: #ffffff;
+		--agent-bubble-them: #26252b;
+		--agent-shadow: 0 6px 28px -8px rgb(0 0 0 / 0.6);
 	}
 }
