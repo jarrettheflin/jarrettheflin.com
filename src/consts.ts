@@ -23,6 +23,6 @@ export const CONTACT = {
 /** Rendered in the hero and footer. Add or remove freely. */
 export const LINKS = [
 	{ label: 'Email', href: `mailto:${CONTACT.email}` },
-	{ label: 'LinkedIn', href: 'https://www.linkedin.com/in/jarrettheflin/' },
+	{ label: 'LinkedIn', href: 'https://www.linkedin.com/in/jheflin' },
 	{ label: 'GitHub', href: 'https://github.com/jarrettheflin' },
 ] as const;
