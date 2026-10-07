@@ -5,7 +5,12 @@ import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://jarrettheflin.com',
+	// `www` is the canonical host: it's the one Vercel serves with a valid
+	// certificate. The bare apex has a stale Namecheap parking A record
+	// alongside Vercel's, which blocks cert issuance, so https://apex fails.
+	// Canonical tags, the sitemap, and OG URLs all derive from this — they
+	// must point at a host that actually resolves.
+	site: 'https://www.jarrettheflin.com',
 	integrations: [sitemap()],
 
 	// `output` stays at its default 'static' — every page prerenders.

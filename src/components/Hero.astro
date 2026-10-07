@@ -3,16 +3,18 @@ import { SITE, LINKS } from '../consts';
 ---
 
 <header class="hero container">
-	<p class="meta hero__eyebrow">{SITE.name}</p>
-
+	{/* The name is the h1: on a personal site it's the most important heading
+	    for both search and screen readers. The two descriptor lines follow it,
+	    the second dimmed so the block reads as name → what → how. */}
 	<h1 class="hero__headline">
-		Growth marketing and operations,<br />
-		<span class="hero__headline-dim">with a camera in hand.</span>
+		{SITE.name}<br />
+		<span class="hero__headline-sub">Growth, Brand, Product Marketing</span><br
+		/>
+		<span class="hero__headline-dim">Camera in hand</span>
 	</h1>
 
 	<p class="hero__lede">
-		I build the systems that get products in front of people — and shoot the
-		films that make them land. Selected work below.
+		I write the stories and systems that get products to the right people.
 	</p>
 
 	<nav class="hero__links" aria-label="Contact and profiles">
@@ -32,17 +34,27 @@ import { SITE, LINKS } from '../consts';
 		padding-bottom: var(--s-section);
 	}
 
-	.hero__eyebrow {
-		margin-bottom: var(--s-6);
-	}
-
 	.hero__headline {
-		max-width: 20ch;
+		/* Wide enough that "Growth, Brand, Product Marketing" doesn't wrap at
+		   desktop sizes — it reads as one line or not at all. */
+		max-width: 28ch;
+		/* balance would even out the three lines and fight the deliberate
+		   stepped structure. */
+		text-wrap: initial;
 	}
 
-	/* Second line recedes, so the first reads as the claim and the second as
-	   the turn. Keeps one headline doing two jobs without extra markup. */
+	/* The descriptor lines step down in weight and size so the name stays the
+	   anchor and the block reads name → what → how. */
+	.hero__headline-sub {
+		font-size: clamp(1.5rem, 1rem + 2.2vw, 2.75rem);
+		font-weight: var(--w-medium);
+		letter-spacing: var(--tr-normal);
+	}
+
 	.hero__headline-dim {
+		font-size: clamp(1.5rem, 1rem + 2.2vw, 2.75rem);
+		font-weight: var(--w-normal);
+		letter-spacing: var(--tr-normal);
 		color: var(--c-ink-faint);
 	}
 

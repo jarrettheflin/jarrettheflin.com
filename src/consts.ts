@@ -17,11 +17,15 @@ export const SITE = {
 	name: 'Jarrett Heflin',
 	/** Appended to page titles. */
 	titleSuffix: 'Jarrett Heflin',
-	/** Default meta description + OG description. */
+	/**
+	 * Default meta description + OG description. Shows in search results and
+	 * link previews, so it carries Jarrett's own hero line rather than a
+	 * paraphrase. Keep under ~155 characters or Google truncates it.
+	 */
 	description:
-		'Growth marketing and operations. Selected video work and projects.',
+		'Growth, brand, and product marketing, camera in hand. I write the stories and systems that get products to the right people.',
 	/** Must match `site` in astro.config.mjs. */
-	url: 'https://jarrettheflin.com',
+	url: 'https://www.jarrettheflin.com',
 	/**
 	 * Social preview image, 1200×630, served from /public.
 	 *
