@@ -22,8 +22,17 @@ export const SITE = {
 		'Growth marketing and operations. Selected video work and projects.',
 	/** Must match `site` in astro.config.mjs. */
 	url: 'https://jarrettheflin.com',
-	/** Lives in /public. Replace with a real 1200×630 image before launch. */
-	ogImage: '/og.png',
+	/**
+	 * Social preview image, 1200×630, served from /public.
+	 *
+	 * `null` until a real one exists — and that matters: pointing at a missing
+	 * file is worse than omitting the tag, because several platforms render a
+	 * broken or blank card instead of falling back to title + description.
+	 * Base.astro only emits the image meta tags when this is set.
+	 *
+	 * To add one: drop `og.png` in /public and set this to '/og.png'.
+	 */
+	ogImage: null as string | null,
 } as const;
 
 /**
