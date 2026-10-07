@@ -1,0 +1,107 @@
+---
+/**
+ * The single seam for how video is presented.
+ *
+ * Right now: a lazy-loaded Vimeo/YouTube iframe in a 16:9 frame. Because every
+ * video on the site routes through this component, switching strategy later —
+ * self-hosted MP4s, or silent looping previews that expand on click — means
+ * editing this file and nothing else.
+ */
+
+interface Props {
+	/** A Vimeo or YouTube URL in any common form. */
+	url: string;
+	/** Used for the iframe's accessible name. */
+	title: string;
+}
+
+const { url, title } = Astro.props;
+
+/**
+ * Turn a watch/share URL into a privacy-friendly embed URL.
+ * Returns null for anything unrecognized so the caller can degrade to a link
+ * rather than render a broken iframe.
+ */
+function toEmbedUrl(raw: string): string | null {
+	let parsed: URL;
+	try {
+		parsed = new URL(raw);
+	} catch {
+		return null;
+	}
+
+	const host = parsed.hostname.replace(/^www\./, '');
+
+	// youtu.be/<id>
+	if (host === 'youtu.be') {
+		const id = parsed.pathname.slice(1);
+		return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+	}
+
+	// youtube.com/watch?v=<id> | /embed/<id> | /shorts/<id>
+	if (host === 'youtube.com' || host === 'youtube-nocookie.com') {
+		const id =
+			parsed.searchParams.get('v') ??
+			parsed.pathname.match(/\/(?:embed|shorts)\/([\w-]+)/)?.[1];
+		return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
+	}
+
+	// vimeo.com/<id> | vimeo.com/<id>/<hash> for unlisted videos
+	if (host === 'vimeo.com') {
+		const [id, hash] = parsed.pathname.split('/').filter(Boolean);
+		if (!/^\d+$/.test(id ?? '')) return null;
+		return `https://player.vimeo.com/video/${id}${hash ? `?h=${hash}` : ''}`;
+	}
+
+	// player.vimeo.com/video/<id> — already an embed URL.
+	if (host === 'player.vimeo.com') return parsed.toString();
+
+	return null;
+}
+
+const embedUrl = toEmbedUrl(url);
+---
+
+{
+	embedUrl ? (
+		<div class="video">
+			<iframe
+				src={embedUrl}
+				title={`${title} — video`}
+				loading="lazy"
+				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+				allowfullscreen
+				referrerpolicy="strict-origin-when-cross-origin"
+			/>
+		</div>
+	) : (
+		/* Unrecognized provider — still give the visitor a way through. */
+		<p class="video__fallback">
+			<a href={url} rel="noopener noreferrer" target="_blank">
+				Watch “{title}” →
+			</a>
+		</p>
+	)
+}
+
+<style>
+	.video {
+		aspect-ratio: 16 / 9;
+		width: 100%;
+		background: var(--c-bg-raised);
+		border: var(--hairline) solid var(--c-rule);
+		border-radius: var(--radius);
+		overflow: hidden;
+	}
+
+	.video iframe {
+		width: 100%;
+		height: 100%;
+		border: 0;
+	}
+
+	.video__fallback {
+		font-family: var(--f-mono);
+		font-size: var(--t-sm);
+	}
+</style>

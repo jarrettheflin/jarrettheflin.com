@@ -1,0 +1,107 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   tokens.css — every visual decision lives here.
+
+   This is the design surface. The components below reference these variables
+   and almost nothing else, so a new visual direction is mostly a rewrite of
+   this one file: change the palette, the type pairing, the spacing rhythm,
+   and the whole site moves with it.
+
+   The current values are a deliberately restrained baseline — warm off-white,
+   near-black ink, one accent, monospace for metadata. Finished-looking, and a
+   clean substrate for a stronger concept.
+   ────────────────────────────────────────────────────────────────────────── */
+
+:root {
+	/* ---- Color: light ---------------------------------------------------- */
+	--c-bg: #faf9f7;
+	--c-bg-raised: #ffffff;
+	--c-ink: #16151a;
+	--c-ink-muted: #5d5a66;
+	--c-ink-faint: #8f8b99;
+	--c-rule: #e3e0db;
+	--c-rule-strong: #c9c5bd;
+	--c-accent: #b2401f;
+	--c-accent-ink: #ffffff;
+	--c-focus: #1f5fb2;
+
+	/* ---- Type ------------------------------------------------------------ */
+	/* System stacks: zero network cost, no layout shift, no font licensing.
+	   Swapping in a real pairing later means editing these two lines. */
+	--f-display: ui-sans-serif, system-ui, -apple-system, 'Helvetica Neue',
+		Arial, sans-serif;
+	--f-body: ui-sans-serif, system-ui, -apple-system, 'Helvetica Neue', Arial,
+		sans-serif;
+	--f-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+
+	/* Fluid scale — each step interpolates between mobile and desktop so there
+	   are no awkward jumps at breakpoints. */
+	--t-xs: 0.75rem;
+	--t-sm: 0.875rem;
+	--t-base: clamp(1rem, 0.97rem + 0.15vw, 1.0625rem);
+	--t-md: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+	--t-lg: clamp(1.5rem, 1.3rem + 0.9vw, 2rem);
+	--t-xl: clamp(2rem, 1.6rem + 2vw, 3.25rem);
+	--t-2xl: clamp(2.75rem, 1.9rem + 4.2vw, 5.5rem);
+
+	--lh-tight: 1.05;
+	--lh-snug: 1.25;
+	--lh-normal: 1.6;
+	--lh-loose: 1.75;
+
+	--tr-tight: -0.02em;
+	--tr-normal: 0;
+	--tr-wide: 0.08em;
+
+	--w-normal: 400;
+	--w-medium: 500;
+	--w-bold: 650;
+
+	/* ---- Spacing: a 4px-rooted rhythm ----------------------------------- */
+	--s-1: 0.25rem;
+	--s-2: 0.5rem;
+	--s-3: 0.75rem;
+	--s-4: 1rem;
+	--s-5: 1.5rem;
+	--s-6: 2rem;
+	--s-7: 3rem;
+	--s-8: 4rem;
+	--s-9: 6rem;
+	--s-10: 8rem;
+
+	/* Vertical space between major page sections — fluid so mobile doesn't
+	   get cavernous gaps. */
+	--s-section: clamp(4rem, 2rem + 8vw, 9rem);
+
+	/* ---- Layout ---------------------------------------------------------- */
+	--measure: 34rem; /* comfortable reading width for prose */
+	--container: 72rem;
+	--gutter: clamp(1.25rem, 0.75rem + 3vw, 4rem);
+
+	/* ---- Form ------------------------------------------------------------ */
+	--radius-sm: 2px;
+	--radius: 3px;
+	--hairline: 1px;
+
+	/* ---- Motion ---------------------------------------------------------- */
+	--ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+	--dur-fast: 120ms;
+	--dur: 220ms;
+	--dur-slow: 420ms;
+}
+
+/* ---- Color: dark --------------------------------------------------------
+   Only the palette is redefined. Everything structural above is shared. */
+@media (prefers-color-scheme: dark) {
+	:root {
+		--c-bg: #121113;
+		--c-bg-raised: #1b1a1d;
+		--c-ink: #f2f0ed;
+		--c-ink-muted: #a8a4ae;
+		--c-ink-faint: #76727e;
+		--c-rule: #2c2a2f;
+		--c-rule-strong: #403d45;
+		--c-accent: #ef7a4e;
+		--c-accent-ink: #1a1013;
+		--c-focus: #7cb0ef;
+	}
+}

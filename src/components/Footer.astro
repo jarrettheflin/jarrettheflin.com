@@ -1,0 +1,51 @@
+---
+import { SITE, LINKS } from '../consts';
+
+// Build-time constant — no client JS needed for the year.
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+	<div class="container footer__inner">
+		<p class="meta">© {year} {SITE.name}</p>
+
+		<nav class="footer__links" aria-label="Contact and profiles">
+			{
+				LINKS.map((link) => (
+					<a class="meta footer__link" href={link.href}>
+						{link.label}
+					</a>
+				))
+			}
+		</nav>
+	</div>
+</footer>
+
+<style>
+	.footer {
+		border-top: var(--hairline) solid var(--c-rule);
+		padding-block: var(--s-6);
+	}
+
+	.footer__inner {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: var(--s-4);
+	}
+
+	.footer__links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--s-5);
+	}
+
+	.footer__link {
+		text-decoration: none;
+	}
+
+	.footer__link:hover {
+		color: var(--c-accent);
+	}
+</style>

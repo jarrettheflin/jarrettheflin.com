@@ -1,0 +1,90 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import WorkCard from './WorkCard.astro';
+
+/**
+ * Reads the work collection and lays it out. Adding a project means dropping a
+ * markdown file into src/content/work/ — this component needs no edit.
+ */
+
+const isProduction = import.meta.env.PROD;
+
+const entries = await getCollection(
+	'work',
+	// Drafts stay visible in `npm run dev` and vanish from the real build.
+	({ data }: CollectionEntry<'work'>) => !isProduction || !data.draft,
+);
+
+// Featured first, then explicit `order`, then newest. Entries without `order`
+// sort behind those that have one rather than colliding at zero.
+const sorted = entries.sort((a, b) => {
+	if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+
+	const ao = a.data.order ?? Number.POSITIVE_INFINITY;
+	const bo = b.data.order ?? Number.POSITIVE_INFINITY;
+	if (ao !== bo) return ao - bo;
+
+	return b.data.year - a.data.year;
+});
+---
+
+<section class="work container" id="work" aria-labelledby="work-heading">
+	<div class="section-label">
+		<h2 class="meta work__label" id="work-heading">Selected work</h2>
+		<span class="meta work__count">{sorted.length}</span>
+	</div>
+
+	{
+		sorted.length === 0 ? (
+			<p class="work__empty">
+				Nothing published yet. Add a markdown file to
+				<code>src/content/work/</code> and it will appear here.
+			</p>
+		) : (
+			<div class="work__grid">
+				{sorted.map((entry: CollectionEntry<'work'>, i: number) => (
+					<WorkCard entry={entry} emphasis={i < 2} />
+				))}
+			</div>
+		)
+	}
+</section>
+
+<style>
+	.work {
+		padding-bottom: var(--s-section);
+		scroll-margin-top: var(--s-6);
+	}
+
+	/* The h2 is styled as a small label rather than a display heading — the
+	   hero already carries the page's typographic weight. */
+	.work__label {
+		font-size: var(--t-xs);
+		font-weight: var(--w-normal);
+		letter-spacing: var(--tr-wide);
+		color: var(--c-ink);
+		margin-right: auto;
+	}
+
+	.work__grid {
+		display: grid;
+		gap: var(--s-8) var(--s-6);
+		grid-template-columns: 1fr;
+	}
+
+	@media (min-width: 48rem) {
+		.work__grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	.work__empty {
+		color: var(--c-ink-muted);
+	}
+
+	.work__empty code {
+		font-family: var(--f-mono);
+		font-size: 0.9em;
+	}
+</style>

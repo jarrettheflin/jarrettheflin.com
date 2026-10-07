@@ -1,0 +1,189 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+/**
+ * One card design, reused for every project on the grid and nowhere
+ * duplicated. Redesigning the grid starts and ends here.
+ */
+interface Props {
+	entry: CollectionEntry<'work'>;
+	/** First two cards run full-bleed-ish on desktop to create a hierarchy. */
+	emphasis?: boolean;
+}
+
+const { entry, emphasis = false } = Astro.props;
+const { title, blurb, year, role, thumbnail, video, tags } = entry.data;
+const href = `/work/${entry.id}/`;
+---
+
+<article class:list={['card', { 'card--emphasis': emphasis }]}>
+	<a class="card__link" href={href}>
+		<div class="card__frame">
+			{
+				thumbnail ? (
+					<Image
+						class="card__image"
+						src={thumbnail}
+						alt=""
+						widths={[480, 800, 1200]}
+						sizes="(min-width: 60rem) 36rem, 92vw"
+						loading="lazy"
+						decoding="async"
+					/>
+				) : (
+					/* No artwork yet — a typographic tile keeps the grid intact so a
+					   project can go up before its stills are cut. */
+					<div class="card__placeholder" aria-hidden="true">
+						<span class="card__placeholder-text">{title}</span>
+					</div>
+				)
+			}
+
+			{
+				video && (
+					<span class="card__badge meta" aria-hidden="true">
+						Video
+					</span>
+				)
+			}
+		</div>
+
+		<div class="card__body">
+			<h3 class="card__title">{title}</h3>
+			<p class="card__blurb">{blurb}</p>
+			<p class="meta card__meta">
+				<span>{year}</span>
+				<span class="card__dot" aria-hidden="true">·</span>
+				<span>{role}</span>
+			</p>
+		</div>
+	</a>
+
+	{
+		tags.length > 0 && (
+			<ul class="card__tags" aria-label="Tags">
+				{tags.map((tag) => (
+					<li class="meta card__tag">{tag}</li>
+				))}
+			</ul>
+		)
+	}
+</article>
+
+<style>
+	.card {
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-3);
+	}
+
+	.card__link {
+		text-decoration: none;
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-4);
+	}
+
+	.card__frame {
+		position: relative;
+		aspect-ratio: 16 / 10;
+		overflow: hidden;
+		background: var(--c-bg-raised);
+		border: var(--hairline) solid var(--c-rule);
+		border-radius: var(--radius);
+	}
+
+	.card--emphasis .card__frame {
+		aspect-ratio: 16 / 9;
+	}
+
+	.card__image {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform var(--dur-slow) var(--ease),
+			filter var(--dur) var(--ease);
+	}
+
+	.card__link:hover .card__image {
+		transform: scale(1.02);
+	}
+
+	.card__placeholder {
+		display: grid;
+		place-items: center;
+		height: 100%;
+		padding: var(--s-5);
+		/* Faint diagonal hatch reads as "intentionally empty" rather than broken. */
+		background-image: repeating-linear-gradient(
+			45deg,
+			transparent 0 10px,
+			var(--c-rule) 10px 11px
+		);
+	}
+
+	.card__placeholder-text {
+		font-family: var(--f-mono);
+		font-size: var(--t-sm);
+		letter-spacing: var(--tr-wide);
+		text-transform: uppercase;
+		text-align: center;
+		color: var(--c-ink-faint);
+		background: var(--c-bg);
+		padding: var(--s-2) var(--s-3);
+	}
+
+	.card__badge {
+		position: absolute;
+		top: var(--s-3);
+		left: var(--s-3);
+		padding: var(--s-1) var(--s-2);
+		background: var(--c-bg);
+		color: var(--c-ink);
+		border-radius: var(--radius-sm);
+	}
+
+	.card__body {
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-2);
+	}
+
+	.card__title {
+		font-size: var(--t-lg);
+	}
+
+	.card__link:hover .card__title {
+		color: var(--c-accent);
+	}
+
+	.card__blurb {
+		max-width: 46ch;
+		color: var(--c-ink-muted);
+	}
+
+	.card__meta {
+		display: flex;
+		gap: var(--s-2);
+		margin-top: var(--s-1);
+	}
+
+	.card__dot {
+		color: var(--c-rule-strong);
+	}
+
+	.card__tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--s-2);
+		list-style: none;
+		padding: 0;
+	}
+
+	.card__tag {
+		padding: 2px var(--s-2);
+		border: var(--hairline) solid var(--c-rule);
+		border-radius: var(--radius-sm);
+	}
+</style>

@@ -1,0 +1,77 @@
+---
+import { SITE, LINKS } from '../consts';
+---
+
+<header class="hero container">
+	<p class="meta hero__eyebrow">{SITE.name}</p>
+
+	<h1 class="hero__headline">
+		Growth marketing and operations,<br />
+		<span class="hero__headline-dim">with a camera in hand.</span>
+	</h1>
+
+	<p class="hero__lede">
+		I build the systems that get products in front of people — and shoot the
+		films that make them land. Selected work below.
+	</p>
+
+	<nav class="hero__links" aria-label="Contact and profiles">
+		{
+			LINKS.map((link) => (
+				<a class="hero__link" href={link.href}>
+					{link.label}
+				</a>
+			))
+		}
+	</nav>
+</header>
+
+<style>
+	.hero {
+		padding-top: clamp(var(--s-7), 10vh, var(--s-9));
+		padding-bottom: var(--s-section);
+	}
+
+	.hero__eyebrow {
+		margin-bottom: var(--s-6);
+	}
+
+	.hero__headline {
+		max-width: 20ch;
+	}
+
+	/* Second line recedes, so the first reads as the claim and the second as
+	   the turn. Keeps one headline doing two jobs without extra markup. */
+	.hero__headline-dim {
+		color: var(--c-ink-faint);
+	}
+
+	.hero__lede {
+		max-width: var(--measure);
+		margin-top: var(--s-6);
+		font-size: var(--t-md);
+		line-height: var(--lh-loose);
+		color: var(--c-ink-muted);
+	}
+
+	.hero__links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--s-2) var(--s-5);
+		margin-top: var(--s-6);
+	}
+
+	.hero__link {
+		font-family: var(--f-mono);
+		font-size: var(--t-xs);
+		letter-spacing: var(--tr-wide);
+		text-transform: uppercase;
+		text-decoration: none;
+		padding-bottom: 2px;
+		border-bottom: var(--hairline) solid var(--c-rule-strong);
+	}
+
+	.hero__link:hover {
+		border-bottom-color: var(--c-accent);
+	}
+</style>
