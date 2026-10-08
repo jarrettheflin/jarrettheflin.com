@@ -1,0 +1,349 @@
+---
+import { Image } from 'astro:assets';
+import type { WorkEntry } from '../lib/work';
+import VideoEmbed from './VideoEmbed.astro';
+
+/**
+ * One card in the scroll-driven stack on the homepage.
+ *
+ * Shape: the media runs the full card width locked to 16:9 — a cover is a film
+ * still, and cropping it to fit a column defeats the point — with a short text
+ * strip beneath. Height therefore falls out of the width rather than being set,
+ * which is what keeps every card the same height and the peek offsets aligned.
+ *
+ * All four `animation-range` endpoints arrive precomputed as plain percentages
+ * from WorkStack.astro, which owns the math and explains it.
+ */
+interface Props {
+	entry: WorkEntry;
+	/** Only used to prioritise loading of the first couple of covers. */
+	index: number;
+	/** Depth 0 → the card is on top, untouched. */
+	recedeFrom: string;
+	/** Depth 3 → the card is gone. */
+	recedeTo: string;
+	mediaFrom: string;
+	mediaTo: string;
+}
+
+const { entry, index, recedeFrom, recedeTo, mediaFrom, mediaTo } =
+	Astro.props;
+const { title, blurb, thumbnail, coverVideo } = entry.data;
+const href = `/work/${entry.id}/`;
+
+const hasCover = Boolean(coverVideo && coverVideo.length > 0);
+
+---
+
+<article
+	class="scard"
+	style={`--r-recede-from:${recedeFrom};--r-recede-to:${recedeTo};--r-media-from:${mediaFrom};--r-media-to:${mediaTo};`}
+>
+	<div class="scard__media">
+		{
+			hasCover ? (
+				<VideoEmbed
+					mode="cover"
+					sources={coverVideo}
+					poster={thumbnail}
+					title={title}
+				/>
+			) : thumbnail ? (
+				<Image
+					class="scard__image"
+					src={thumbnail}
+					alt=""
+					widths={[640, 960, 1440]}
+					sizes="(min-width: 48rem) 62rem, 92vw"
+					loading={index < 2 ? 'eager' : 'lazy'}
+					decoding="async"
+				/>
+			) : (
+				/* No artwork yet — the hatched typographic tile carried over from
+				   the grid card, so a project can go up before its stills are
+				   cut. Identical box, so adding art shifts nothing. */
+				<div class="scard__tile" aria-hidden="true">
+					<span class="scard__tile-text">{title}</span>
+				</div>
+			)
+		}
+	</div>
+
+	{/* Title, blurb, and the "see more" cue — nothing else. The mockup drops the
+	    index, the year · role line, and the tag pills from the card; they still
+	    appear in full on the project page. */}
+	<div class="scard__text">
+		<div class="scard__lead">
+			{/* The heading's link is the card's ONLY focusable element here. The
+			    ::after overlay below extends the hit area without adding a
+			    second tab stop. */}
+			<h3 class="scard__title">
+				<a class="scard__link" href={href}>{title}</a>
+			</h3>
+
+			<p class="scard__blurb">{blurb}</p>
+		</div>
+
+		<p class="meta scard__more" aria-hidden="true">See more →</p>
+	</div>
+</article>
+
+<style>
+	.scard {
+		position: relative;
+		overflow: hidden;
+		background: var(--c-bg-raised);
+		border: var(--hairline) solid var(--c-rule);
+		border-radius: var(--radius-card);
+		/* The pile shrinks toward its own top edge, so the visible sliver of a
+		   buried card is the top of its media. */
+		transform-origin: top center;
+
+		/* Width is capped three ways, and the third is the interesting one:
+		   because the media is locked to 16:9, width dictates height. Capping
+		   against the height a slot can spare is what keeps a card plus its
+		   three peeks on screen at short viewport heights — sizing by height
+		   and letting width follow would overflow sideways instead.
+
+		   The media is inset, so it is narrower than the card and the top inset
+		   adds to the total:
+		       height = inset + (W − 2·inset)·9/16 + text strip
+		   which rearranges to the bound below. Get this wrong and cards overflow
+		   their slot on a short viewport. */
+		width: min(
+			92vw,
+			var(--stack-card-w),
+			calc(
+				(78dvh - var(--stack-text-h) - var(--stack-media-inset)) * 16 / 9 +
+					2 * var(--stack-media-inset)
+			)
+		);
+	}
+
+	/* ---- Media ----------------------------------------------------------- */
+
+	.scard__media {
+		position: relative;
+		overflow: hidden;
+		/* The one declaration the whole card's geometry hangs off. */
+		aspect-ratio: 16 / 9;
+		/* Inset on three sides, flush at the bottom where the text strip picks
+		   up. `width: auto` so a block element fills the card minus its own
+		   margins — the inset is therefore part of the height calc above. */
+		margin: var(--stack-media-inset) var(--stack-media-inset) 0;
+		width: auto;
+		background: var(--c-bg);
+		/* Square corners: the mock insets the media but doesn't round it. */
+		border-radius: 0;
+	}
+
+	.scard__image,
+	.scard__tile {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.scard__tile {
+		display: grid;
+		place-items: center;
+		padding: var(--s-5);
+		/* Faint diagonal hatch reads as "intentionally empty" rather than
+		   broken. */
+		background-image: repeating-linear-gradient(
+			45deg,
+			transparent 0 10px,
+			var(--c-rule) 10px 11px
+		);
+	}
+
+	.scard__tile-text {
+		font-family: var(--f-mono);
+		font-size: var(--t-sm);
+		letter-spacing: var(--tr-wide);
+		text-transform: uppercase;
+		text-align: center;
+		color: var(--c-ink-faint);
+		background: var(--c-bg);
+		padding: var(--s-2) var(--s-3);
+	}
+
+	/* ---- Text strip ------------------------------------------------------ */
+
+	.scard__text {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: var(--s-3);
+		/* Padded to the media's own inset so the card reads as one grid rather
+		   than two differently-aligned blocks. */
+		padding: var(--s-4) var(--stack-media-inset);
+		/* `min-height`, not `height`, on mobile: the two groups stack there and
+		   need the room. Locked to an exact height at the breakpoint below so
+		   every card ends up identical and the peeks line up. */
+		min-height: var(--stack-text-h);
+	}
+
+	@media (min-width: 48rem) {
+		.scard__text {
+			height: var(--stack-text-h);
+			min-height: 0;
+			flex-direction: row;
+			align-items: flex-end;
+			justify-content: space-between;
+			gap: var(--s-6);
+		}
+	}
+
+	.scard__lead {
+		display: flex;
+		flex-direction: column;
+		gap: var(--s-2);
+		min-width: 0;
+	}
+
+	.scard__title {
+		font-size: var(--t-card-title);
+		line-height: var(--lh-snug);
+	}
+
+	.scard__link {
+		text-decoration: none;
+	}
+
+	/* Extends the hit area over the whole card without a second tab stop —
+	   including over the cover video, which carries no controls to shadow. */
+	.scard__link::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
+
+	.scard__link:hover {
+		color: var(--c-accent);
+	}
+
+	.scard__blurb {
+		max-width: 60ch;
+		font-size: var(--t-card-blurb);
+		line-height: var(--lh-snug);
+		color: var(--c-ink-muted);
+		/* The strip is a fixed height, so a long blurb has to clamp rather than
+		   push the card taller than its neighbours. */
+		overflow: hidden;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+	}
+
+	.scard__more {
+		color: var(--c-ink);
+		flex-shrink: 0;
+	}
+
+	.scard:hover .scard__more {
+		color: var(--c-accent);
+	}
+
+	/* ---- Scroll-driven motion -------------------------------------------
+	   Gated POSITIVELY on `no-preference` rather than leaning on the global
+	   kill-switch in global.css. That switch sets `animation-duration: 0.01ms
+	   !important`, which is built for time-based animations; on a progress-based
+	   timeline the duration is ignored, so the switch would leave the pile fully
+	   active — and a near-miss could strand a card at `opacity: 0`. Never
+	   declaring the animation is the only safe way to honor the preference.
+
+	   The @supports gate does double duty: it's the no-support fallback, and it
+	   guarantees `animation-duration: auto` parses, since any engine that
+	   supports `animation-timeline: view()` implements the same spec level. */
+	@media (prefers-reduced-motion: no-preference) {
+		@supports (animation-timeline: view()) {
+			.scard {
+				/* Promoted here rather than unconditionally: under reduced
+				   motion or without support, eight permanent composited layers
+				   would be pure cost. */
+				will-change: transform, opacity;
+
+				animation-name: scard-recede;
+				/* Longhands, not the `animation` shorthand — the shorthand
+				   resets animation-timeline to `auto` and kills the effect. */
+				animation-duration: auto;
+				animation-timing-function: linear;
+				/* `both`: before the range hold depth 0, after it hold the
+				   hidden end state rather than snapping back to visible. */
+				animation-fill-mode: both;
+				animation-timeline: --work-stack;
+				animation-range: var(--r-recede-from) var(--r-recede-to);
+			}
+
+			/* Stills only. Scaling a <video> would scale its native control bar
+			   along with it, which reads as broken rather than as motion.
+			   :global because the Image component's output doesn't carry this
+			   component's scope hash; the scoped parent keeps the reach
+			   contained. */
+			.scard__media > :global(img),
+			.scard__tile {
+				animation-name: scard-media-in;
+				animation-duration: auto;
+				animation-timing-function: linear;
+				animation-fill-mode: both;
+				animation-timeline: --work-stack;
+				animation-range: var(--r-media-from) var(--r-media-to);
+			}
+		}
+	}
+
+	/* One keyframe per depth of burial. The range is exactly three steps long,
+	   so 33.333% and 66.667% land precisely on depth 1 and depth 2. */
+	@keyframes scard-recede {
+		/* depth 0 — on top, untouched */
+		0% {
+			transform: translateY(0) scale(1);
+			opacity: 1;
+			visibility: visible;
+		}
+		/* depth 1 — one card over it, one sliver showing */
+		33.333% {
+			transform: translateY(calc(var(--stack-peek) * -1))
+				scale(calc(1 - var(--stack-scale-step)));
+			opacity: 1;
+		}
+		/* depth 2 — starting to leave */
+		66.667% {
+			transform: translateY(calc(var(--stack-peek) * -2))
+				scale(calc(1 - var(--stack-scale-step) * 2));
+			opacity: 0.55;
+		}
+		/* depth 3 — gone. Two keyframes rather than one, because `visibility`
+		   interpolates discretely but resolves to `visible` for any progress
+		   strictly below the endpoint: the hidden value has to sit alone at
+		   exactly 100%, held there by `animation-fill-mode: both`.
+
+		   This is the one piece of accessibility state a pure-CSS approach can
+		   drive from scroll position — `visibility: hidden` takes a buried card
+		   out of both the accessibility tree and the tab order, which
+		   `opacity: 0` does not. */
+		99.9% {
+			transform: translateY(calc(var(--stack-peek) * -3))
+				scale(calc(1 - var(--stack-scale-step) * 3));
+			opacity: 0;
+			visibility: visible;
+		}
+		100% {
+			transform: translateY(calc(var(--stack-peek) * -3))
+				scale(calc(1 - var(--stack-scale-step) * 3));
+			opacity: 0;
+			visibility: hidden;
+		}
+	}
+
+	/* The still settles as the card rises into place. */
+	@keyframes scard-media-in {
+		from {
+			transform: scale(var(--stack-media-zoom));
+		}
+		to {
+			transform: scale(1);
+		}
+	}
+</style>

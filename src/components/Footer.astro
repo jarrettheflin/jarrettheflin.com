@@ -10,6 +10,10 @@ const year = new Date().getFullYear();
 		<p class="meta">© {year} {SITE.name}</p>
 
 		<nav class="footer__links" aria-label="Contact and profiles">
+			{/* The flat work index. Reachable from the end of the document as
+			    well as from the top of the homepage stack, because the stack
+			    itself can't be traversed backward by tabbing. */}
+			<a class="meta footer__link" href="/work/">Work</a>
 			{
 				LINKS.map((link) => (
 					<a class="meta footer__link" href={link.href}>

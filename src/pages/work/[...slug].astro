@@ -1,35 +1,36 @@
 ---
-import { getCollection, render } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
 import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Footer from '../../components/Footer.astro';
 import VideoEmbed from '../../components/VideoEmbed.astro';
+import { getWorkEntries } from '../../lib/work';
+import type { WorkEntry } from '../../lib/work';
 
 /**
  * Generates one page per markdown file in src/content/work/.
  * Adding a project never requires touching this file.
+ *
+ * The draft filter lives in src/lib/work.ts, shared with the homepage stack and
+ * the /work/ index — so a project can never be listed somewhere it wasn't
+ * actually built.
  */
 export async function getStaticPaths() {
-	const isProduction = import.meta.env.PROD;
+	const entries = await getWorkEntries();
 
-	const entries = await getCollection(
-		'work',
-		({ data }: CollectionEntry<'work'>) => !isProduction || !data.draft,
-	);
-
-	return entries.map((entry: CollectionEntry<'work'>) => ({
+	return entries.map((entry: WorkEntry) => ({
 		params: { slug: entry.id },
 		props: { entry },
 	}));
 }
 
 interface Props {
-	entry: CollectionEntry<'work'>;
+	entry: WorkEntry;
 }
 
 const { entry } = Astro.props;
-const { title, blurb, year, role, tags, thumbnail, video, link } = entry.data;
+const { title, blurb, year, role, tags, thumbnail, video, coverVideo, link } =
+	entry.data;
 
 // The markdown body below the frontmatter becomes the write-up.
 const { Content } = await render(entry);
@@ -52,10 +53,14 @@ const { Content } = await render(entry);
 				<p class="project__blurb">{blurb}</p>
 
 				<dl class="project__facts">
-					<div class="project__fact">
-						<dt class="meta">Year</dt>
-						<dd>{year}</dd>
-					</div>
+					{
+						year && (
+							<div class="project__fact">
+								<dt class="meta">Year</dt>
+								<dd>{year}</dd>
+							</div>
+						)
+					}
 					<div class="project__fact">
 						<dt class="meta">Role</dt>
 						<dd>{role}</dd>
@@ -75,6 +80,18 @@ const { Content } = await render(entry);
 				{
 					video ? (
 						<VideoEmbed url={video} title={title} />
+					) : coverVideo && coverVideo.length > 0 ? (
+						/* No full-length embed yet, but there's a cover loop — show
+						   that rather than a still. Better than nothing, and it
+						   upgrades to the real embed the moment `video` is set. */
+						<div class="project__cover">
+							<VideoEmbed
+								mode="cover"
+								sources={coverVideo}
+								poster={thumbnail}
+								title={title}
+							/>
+						</div>
 					) : (
 						thumbnail && (
 							<Image
@@ -156,6 +173,16 @@ const { Content } = await render(entry);
 
 	.project__image {
 		width: 100%;
+		border: var(--hairline) solid var(--c-rule);
+		border-radius: var(--radius);
+	}
+
+	/* Gives the cover loop the same 16:9 frame the embed gets. */
+	.project__cover {
+		aspect-ratio: 16 / 9;
+		width: 100%;
+		overflow: hidden;
+		background: var(--c-bg-raised);
 		border: var(--hairline) solid var(--c-rule);
 		border-radius: var(--radius);
 	}

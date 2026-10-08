@@ -40,6 +40,18 @@ const socialImage = image ? new URL(image, Astro.site) : null;
 		<meta name="description" content={description} />
 		<link rel="canonical" href={canonical} />
 
+		{/* The headline is the largest thing on the page and the most visibly
+		    affected by a font swap, so the one variable file is preloaded.
+		    `crossorigin` is required even same-origin: fonts are always fetched
+		    in CORS mode, and without it the preload is discarded and refetched. */}
+		<link
+			rel="preload"
+			href="/fonts/figtree-latin-var.woff2"
+			as="font"
+			type="font/woff2"
+			crossorigin
+		/>
+
 		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
 		<link rel="icon" href="/favicon.ico" sizes="32x32" />
 		<link rel="sitemap" href="/sitemap-index.xml" />

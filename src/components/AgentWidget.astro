@@ -18,7 +18,7 @@ import { GREETING } from '../lib/agent-prompt';
 		type="button"
 		class="agent__orb"
 		data-agent-open
-		aria-label="Open chat with Jarrett's agent"
+		aria-label="Open chat with Sunny, Jarrett's agent"
 		aria-expanded="false"
 		aria-controls="agent-panel"
 	>
@@ -32,9 +32,9 @@ import { GREETING } from '../lib/agent-prompt';
 		>
 			<defs>
 				<radialGradient id="agent-field" cx="34%" cy="28%" r="78%">
-					<stop offset="0%" stop-color="var(--agent-blue-lift)" />
-					<stop offset="58%" stop-color="var(--agent-blue)" />
-					<stop offset="100%" stop-color="var(--agent-blue-deep)" />
+					<stop offset="0%" stop-color="var(--agent-field-lift)" />
+					<stop offset="58%" stop-color="var(--agent-field)" />
+					<stop offset="100%" stop-color="var(--agent-field-deep)" />
 				</radialGradient>
 			</defs>
 			<circle cx="24" cy="24" r="24" fill="url(#agent-field)" />
@@ -42,7 +42,7 @@ import { GREETING } from '../lib/agent-prompt';
 			<path
 				d="M24 9a15 15 0 1 1-15 15"
 				fill="none"
-				stroke="var(--agent-on-blue)"
+				stroke="var(--agent-on-field)"
 				stroke-width="3.25"
 				stroke-linecap="round"
 				opacity="0.95"
@@ -50,12 +50,12 @@ import { GREETING } from '../lib/agent-prompt';
 			<path
 				d="M24 16a8 8 0 1 0 8 8"
 				fill="none"
-				stroke="var(--agent-on-blue)"
+				stroke="var(--agent-on-field)"
 				stroke-width="3.25"
 				stroke-linecap="round"
 				opacity="0.75"
 			/>
-			<circle cx="24" cy="24" r="2.5" fill="var(--agent-on-blue)" />
+			<circle cx="24" cy="24" r="2.5" fill="var(--agent-on-field)" />
 		</svg>
 	</button>
 
@@ -65,11 +65,11 @@ import { GREETING } from '../lib/agent-prompt';
 		data-agent-panel
 		role="dialog"
 		aria-modal="false"
-		aria-label="Chat with Jarrett's agent"
+		aria-label="Chat with Sunny, Jarrett's agent"
 		hidden
 	>
 		<div class="agent__head">
-			<span class="meta agent__title">Jarrett's agent</span>
+			<span class="meta agent__title">Sunny</span>
 			<button
 				type="button"
 				class="agent__close"
@@ -127,7 +127,14 @@ import { GREETING } from '../lib/agent-prompt';
 		const root = document.querySelector('[data-agent]');
 		if (!root) return;
 
+		/* The orb is this widget's own trigger — it owns aria-expanded. But any
+		   element on the page carrying [data-agent-open] opens the panel too
+		   (the hero's "Email" button is one), which is how that button needs no
+		   script of its own and client JS stays in exactly one file. */
 		const orb = root.querySelector('[data-agent-open]');
+		const triggers = document.querySelectorAll('[data-agent-open]');
+		/* Focus goes back to whichever trigger opened it, not always the orb. */
+		let lastTrigger = orb;
 		const panel = root.querySelector('[data-agent-panel]');
 		const closeBtn = root.querySelector('[data-agent-close]');
 		const log = root.querySelector('[data-agent-log]');
@@ -190,11 +197,15 @@ import { GREETING } from '../lib/agent-prompt';
 			orb.setAttribute('aria-expanded', 'true');
 			root.dataset.open = 'true';
 
-			if (!store.get(SEEN_KEY)) {
+			/* Greet whenever the conversation is empty, not just on a first-ever
+			   visit. Someone who clicks "Email" is asking to be introduced and
+			   should always get Sunny's opening line; SEEN_KEY below only
+			   governs whether the panel opens *unprompted*. */
+			if (!log.children.length) {
 				addBubble('agent', GREETING);
 				history.push({ role: 'assistant', content: GREETING });
-				store.set(SEEN_KEY, '1');
 			}
+			store.set(SEEN_KEY, '1');
 			input.focus();
 		}
 
@@ -202,11 +213,15 @@ import { GREETING } from '../lib/agent-prompt';
 			panel.hidden = true;
 			orb.setAttribute('aria-expanded', 'false');
 			root.dataset.open = 'false';
-			orb.focus(); // return focus where the user left it
+			// Return focus to whatever opened it, not always the orb.
+			if (lastTrigger && document.contains(lastTrigger)) lastTrigger.focus();
 		}
 
-		orb.addEventListener('click', () => {
-			panel.hidden ? open() : close();
+		triggers.forEach((trigger) => {
+			trigger.addEventListener('click', () => {
+				lastTrigger = trigger;
+				panel.hidden ? open() : close();
+			});
 		});
 		closeBtn.addEventListener('click', close);
 
@@ -458,7 +473,7 @@ import { GREETING } from '../lib/agent-prompt';
 
 	.agent__row--you .agent__bubble {
 		background: var(--agent-bubble-you);
-		color: var(--agent-on-blue);
+		color: var(--agent-on-field);
 		border-bottom-right-radius: var(--radius);
 	}
 
@@ -508,8 +523,8 @@ import { GREETING } from '../lib/agent-prompt';
 		padding: 0;
 		border: 0;
 		border-radius: 50%;
-		background: var(--agent-blue);
-		color: var(--agent-on-blue);
+		background: var(--agent-field);
+		color: var(--agent-on-field);
 		cursor: pointer;
 	}
 

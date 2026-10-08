@@ -2,22 +2,24 @@
 import { SITE, LINKS } from '../consts';
 ---
 
-<header class="hero container">
-	{/* The name is the h1: on a personal site it's the most important heading
-	    for both search and screen readers. The two descriptor lines follow it,
-	    the second dimmed so the block reads as name → what → how. */}
+<header class="hero">
+	{/* Both halves stay inside the one h1. Visually the name is a small
+	    eyebrow over a large descriptor — that's the mockup — but on a personal
+	    site "Jarrett Heflin" is still the thing search and screen readers most
+	    need from the top-level heading, so it isn't demoted to a <p>. */}
 	<h1 class="hero__headline">
-		{SITE.name}<br />
-		<span class="hero__headline-sub">Growth, Brand, Product Marketing</span><br
-		/>
-		<span class="hero__headline-dim">Camera in hand</span>
+		<span class="hero__name">{SITE.name}</span>
+		<span class="hero__role">Brand, Growth<br />Product Marketing</span>
 	</h1>
 
-	<p class="hero__lede">
-		I write the stories and systems that get products to the right people.
-	</p>
+	<p class="hero__lede">{SITE.description}</p>
 
 	<nav class="hero__links" aria-label="Contact and profiles">
+		{/* A button, not a mailto. The address never reaches the client (see
+		    AGENTS.md); `data-agent-open` is picked up by the agent widget's
+		    script, which binds every element carrying it — so this needs no
+		    JavaScript of its own and client JS stays in exactly one file. */}
+		<button class="hero__link" type="button" data-agent-open>Email</button>
 		{
 			LINKS.map((link) => (
 				<a class="hero__link" href={link.href}>
@@ -29,61 +31,159 @@ import { SITE, LINKS } from '../consts';
 </header>
 
 <style>
+	/* Compact and pinned. Compact because the first work card has to be on
+	   screen from the outset rather than a scroll away; pinned because the
+	   cards are meant to travel *over* the hero, which only reads as deliberate
+	   if the hero holds still while they do. The cards are later in DOM order
+	   and positioned, so they paint over this with no z-index needed. */
 	.hero {
-		padding-top: clamp(var(--s-7), 10vh, var(--s-9));
-		padding-bottom: var(--s-section);
+		position: sticky;
+		top: 0;
+		/* Fluid rather than fixed: the hero is sticky, so this space is also
+		   the gap the cards travel into. A flat 6rem would eat too much of a
+		   short viewport. */
+		padding-top: clamp(var(--s-7), 8vh, var(--s-9));
+		padding-bottom: var(--s-6);
+
+		/* Not `.container`. The mock hangs the hero's left edge outside the
+		   card's — 178px against the card's 225px at a 1442px viewport — so the
+		   two deliberately don't align. This column is the card's width plus
+		   that overhang on each side, and it falls back to the normal gutter
+		   once the viewport is too narrow for it. */
+		width: min(100% - 2 * var(--gutter), 68rem);
+		margin-inline: auto;
 	}
 
 	.hero__headline {
-		/* Wide enough that "Growth, Brand, Product Marketing" doesn't wrap at
-		   desktop sizes — it reads as one line or not at all. */
-		max-width: 28ch;
-		/* balance would even out the three lines and fight the deliberate
-		   stepped structure. */
+		display: flex;
+		flex-direction: column;
+		/* The line break between the two descriptor lines is authored, not
+		   wrapped — balancing would fight it. */
 		text-wrap: initial;
 	}
 
-	/* The descriptor lines step down in weight and size so the name stays the
-	   anchor and the block reads name → what → how. */
-	.hero__headline-sub {
-		font-size: clamp(1.5rem, 1rem + 2.2vw, 2.75rem);
-		font-weight: var(--w-medium);
-		letter-spacing: var(--tr-normal);
+	/* The name, as a small tracked eyebrow over the descriptor. */
+	.hero__name {
+		font-size: var(--t-hero-name);
+		font-weight: var(--w-bold);
+		letter-spacing: var(--tr-wide);
+		text-transform: uppercase;
+		color: var(--c-ink-muted);
+		margin-bottom: var(--s-3);
 	}
 
-	.hero__headline-dim {
-		font-size: clamp(1.5rem, 1rem + 2.2vw, 2.75rem);
-		font-weight: var(--w-normal);
-		letter-spacing: var(--tr-normal);
-		color: var(--c-ink-faint);
+	/* The display line, and the largest thing on the page. */
+	.hero__role {
+		font-size: var(--t-hero-head);
+		font-weight: var(--w-bold);
+		line-height: 1.08;
+		letter-spacing: var(--tr-tight);
 	}
 
 	.hero__lede {
-		max-width: var(--measure);
-		margin-top: var(--s-6);
-		font-size: var(--t-md);
-		line-height: var(--lh-loose);
+		/* Sized so the lede breaks into the mock's two lines rather than three
+		   — its first line runs ~622px at this size. */
+		max-width: 39rem;
+		margin-top: var(--s-5);
+		font-size: var(--t-hero-lede);
+		line-height: 1.36;
 		color: var(--c-ink-muted);
 	}
 
 	.hero__links {
 		display: flex;
 		flex-wrap: wrap;
+		align-items: baseline;
 		gap: var(--s-2) var(--s-5);
 		margin-top: var(--s-6);
 	}
 
+	/* One rule for both the button and the anchors, so "Email" and "LinkedIn"
+	   are typographically identical despite being different elements. */
 	.hero__link {
-		font-family: var(--f-mono);
-		font-size: var(--t-xs);
-		letter-spacing: var(--tr-wide);
-		text-transform: uppercase;
-		text-decoration: none;
-		padding-bottom: 2px;
-		border-bottom: var(--hairline) solid var(--c-rule-strong);
+		font-family: inherit;
+		font-size: var(--t-hero-link);
+		font-weight: var(--w-normal);
+		line-height: 1.3;
+		color: inherit;
+		letter-spacing: var(--tr-normal);
+		text-transform: none;
+		text-decoration: underline;
+		text-decoration-thickness: var(--hairline);
+		text-underline-offset: 0.22em;
+		text-decoration-color: currentColor;
+		/* Button reset — it has to sit on the baseline with the anchors. */
+		background: none;
+		border: 0;
+		padding: 0;
+		cursor: pointer;
 	}
 
 	.hero__link:hover {
-		border-bottom-color: var(--c-accent);
+		color: var(--c-accent);
+	}
+
+	/* ---- Receding behind the stack ---------------------------------------
+	   The hero pins, the first card rises over it, and then it leaves — rather
+	   than sitting behind all eight cards for nine viewports of scrolling.
+
+	   It reads the work stack's timeline, which is declared on .stack__track —
+	   the hero's *sibling*, not an ancestor, so the name wouldn't resolve on
+	   its own. `timeline-scope: --work-stack` on <main> in src/pages/index.astro
+	   is what makes it visible here; without that one declaration this
+	   animation silently does nothing.
+
+	   The range is one step of the stack's progress — exactly the window
+	   between card one pinning and card two pinning. WorkStack.astro computes
+	   --hero-from/--hero-to and sets them on <main> so the numbers stay with
+	   the math that produces them.
+
+	   Gated the same way as the cards: positively on `no-preference`, never
+	   relying on the global kill-switch in global.css, which doesn't govern
+	   progress-based timelines. */
+	@media (prefers-reduced-motion: no-preference) {
+		@supports (animation-timeline: view()) {
+			.hero {
+				animation-name: hero-recede;
+				animation-duration: auto;
+				animation-timing-function: linear;
+				animation-fill-mode: both;
+				animation-timeline: --work-stack;
+				animation-range: var(--hero-from, 10%) var(--hero-to, 20%);
+			}
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.hero {
+			position: static;
+		}
+	}
+
+	@supports not (animation-timeline: view()) {
+		.hero {
+			position: static;
+		}
+	}
+
+	/* The 99.9/100 pair is the same `visibility` trick the cards use: it
+	   interpolates discretely but resolves to `visible` for any progress below
+	   the endpoint, so the hidden value has to sit alone at exactly 100%. It
+	   takes the faded hero — including its LinkedIn link — out of the tab order
+	   rather than leaving an invisible focus trap. The footer carries the same
+	   links, so nothing becomes unreachable. */
+	@keyframes hero-recede {
+		0% {
+			opacity: 1;
+			visibility: visible;
+		}
+		99.9% {
+			opacity: 0;
+			visibility: visible;
+		}
+		100% {
+			opacity: 0;
+			visibility: hidden;
+		}
 	}
 </style>

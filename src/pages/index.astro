@@ -1,18 +1,44 @@
 ---
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
-import WorkGrid from '../components/WorkGrid.astro';
+import WorkStack from '../components/WorkStack.astro';
 import Footer from '../components/Footer.astro';
 import AgentWidget from '../components/AgentWidget.astro';
+import { getWorkEntries, stackStepPercent } from '../lib/work';
+
+/**
+ * <main> does one job beyond holding the page together: it is the common
+ * ancestor of the hero and the work stack, which is where the two have to meet.
+ *
+ * The stack's view-timeline is declared on `.stack__track`, deep inside
+ * WorkStack. Timeline names only resolve up the ancestor chain, so the hero —
+ * a sibling of the stack, not a descendant — cannot see it. `timeline-scope`
+ * below hoists the name to this element, which both can reach.
+ *
+ * The hero fades across one step of stack progress: the window between card one
+ * pinning and card two pinning. The step comes from the same helper WorkStack
+ * uses, so the hero can't drift out of sync with the cards.
+ */
+const n = (await getWorkEntries()).length;
+const step = stackStepPercent(n);
+const heroRange = `--hero-from:${step.toFixed(4)}%;--hero-to:${(2 * step).toFixed(4)}%;`;
 ---
 
 <Base>
-	<main id="main">
+	<main id="main" style={heroRange}>
 		<Hero />
-		<WorkGrid />
+		<WorkStack />
 	</main>
 	<Footer />
 
 	{/* Homepage only — the project pages stay free of client-side JS. */}
 	<AgentWidget />
 </Base>
+
+<style>
+	/* Hoists --work-stack out of the stack so the hero can animate on it.
+	   Without this one declaration the hero's fade silently does nothing. */
+	main {
+		timeline-scope: --work-stack;
+	}
+</style>

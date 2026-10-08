@@ -53,8 +53,12 @@ const href = `/work/${entry.id}/`;
 			<h3 class="card__title">{title}</h3>
 			<p class="card__blurb">{blurb}</p>
 			<p class="meta card__meta">
-				<span>{year}</span>
-				<span class="card__dot" aria-hidden="true">·</span>
+				{year && <span>{year}</span>}
+				{year && (
+					<span class="card__dot" aria-hidden="true">
+						·
+					</span>
+				)}
 				<span>{role}</span>
 			</p>
 		</div>

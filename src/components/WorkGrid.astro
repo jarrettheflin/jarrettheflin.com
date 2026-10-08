@@ -1,37 +1,33 @@
 ---
-import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
+import { getWorkEntries } from '../lib/work';
+import type { WorkEntry } from '../lib/work';
 import WorkCard from './WorkCard.astro';
 
 /**
- * Reads the work collection and lays it out. Adding a project means dropping a
- * markdown file into src/content/work/ — this component needs no edit.
+ * The flat, unanimated index of every project — now the body of `/work/`.
+ *
+ * The homepage uses WorkStack.astro instead. This grid stays because it is the
+ * canonical keyboard and screen-reader path to the full list: in the stack, a
+ * card buried three deep is `visibility: hidden` and so can't be reached by
+ * forward tabbing. It is also the only place a visitor can see all the work at
+ * once without nine viewports of scrolling.
+ *
+ * Adding a project means dropping a markdown file into src/content/work/ —
+ * this component needs no edit.
  */
+interface Props {
+	/** Shown as the section label. */
+	heading?: string;
+}
 
-const isProduction = import.meta.env.PROD;
+const { heading = 'Selected work' } = Astro.props;
 
-const entries = await getCollection(
-	'work',
-	// Drafts stay visible in `npm run dev` and vanish from the real build.
-	({ data }: CollectionEntry<'work'>) => !isProduction || !data.draft,
-);
-
-// Featured first, then explicit `order`, then newest. Entries without `order`
-// sort behind those that have one rather than colliding at zero.
-const sorted = entries.sort((a, b) => {
-	if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
-
-	const ao = a.data.order ?? Number.POSITIVE_INFINITY;
-	const bo = b.data.order ?? Number.POSITIVE_INFINITY;
-	if (ao !== bo) return ao - bo;
-
-	return b.data.year - a.data.year;
-});
+const sorted = await getWorkEntries();
 ---
 
 <section class="work container" id="work" aria-labelledby="work-heading">
 	<div class="section-label">
-		<h2 class="meta work__label" id="work-heading">Selected work</h2>
+		<h2 class="meta work__label" id="work-heading">{heading}</h2>
 		<span class="meta work__count">{sorted.length}</span>
 	</div>
 
@@ -43,7 +39,7 @@ const sorted = entries.sort((a, b) => {
 			</p>
 		) : (
 			<div class="work__grid">
-				{sorted.map((entry: CollectionEntry<'work'>, i: number) => (
+				{sorted.map((entry: WorkEntry, i: number) => (
 					<WorkCard entry={entry} emphasis={i < 2} />
 				))}
 			</div>

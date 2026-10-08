@@ -1,21 +1,37 @@
 ---
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
 /**
- * The single seam for how video is presented.
+ * The single seam for how video is presented. Two modes:
  *
- * Right now: a lazy-loaded Vimeo/YouTube iframe in a 16:9 frame. Because every
- * video on the site routes through this component, switching strategy later —
- * self-hosted MP4s, or silent looping previews that expand on click — means
- * editing this file and nothing else.
+ *   mode="embed" (default) — a lazy-loaded Vimeo/YouTube iframe in a 16:9
+ *       frame. Used on project pages, where the visitor asked to watch
+ *       something.
+ *
+ *   mode="cover" — a muted, looping, self-hosted <video> filling its box.
+ *       Used as card art in the homepage work stack. Never an iframe here:
+ *       eight third-party players on one page is unshippable, and an iframe
+ *       can't be made to loop silently without its own chrome.
+ *
+ * Because every video on the site still routes through this one file,
+ * switching strategy again — a different host, a click-to-expand preview —
+ * means editing this file and nothing else.
  */
 
 interface Props {
-	/** A Vimeo or YouTube URL in any common form. */
-	url: string;
-	/** Used for the iframe's accessible name. */
+	mode?: 'embed' | 'cover';
+	/** mode="embed": a Vimeo or YouTube URL in any common form. */
+	url?: string;
+	/** mode="cover": root-relative paths under public/, best codec first. */
+	sources?: readonly string[];
+	/** mode="cover": the poster frame, reusing the entry's `thumbnail`. */
+	poster?: ImageMetadata;
+	/** Used for the iframe's accessible name, and the cover's aria-label. */
 	title: string;
 }
 
-const { url, title } = Astro.props;
+const { mode = 'embed', url, sources, poster, title } = Astro.props;
 
 /**
  * Turn a watch/share URL into a privacy-friendly embed URL.
@@ -59,11 +75,66 @@ function toEmbedUrl(raw: string): string | null {
 	return null;
 }
 
-const embedUrl = toEmbedUrl(url);
+const embedUrl = mode === 'embed' && url ? toEmbedUrl(url) : null;
+
+// The poster goes through the asset pipeline, so it's the same optimized file
+// the grid card already downloads rather than a second full-size fetch.
+const posterUrl = poster
+	? (await getImage({ src: poster, width: 1200, format: 'webp' })).src
+	: undefined;
+
+function mimeFor(path: string): string {
+	return path.endsWith('.webm') ? 'video/webm' : 'video/mp4';
+}
+
+const hasSources = Boolean(sources && sources.length > 0);
 ---
 
 {
-	embedUrl ? (
+	mode === 'cover' ? (
+		hasSources ? (
+			/* `muted` + `playsinline` are mandatory, not stylistic: without both,
+			   iOS refuses to autoplay and silently shows the poster instead.
+			   `preload="none"` keeps the covers far down the stack from fetching
+			   metadata on load; `autoplay` still wins once the browser decides
+			   the element is worth playing.
+
+			   Deliberately no `controls`. Covers are exported with no audio
+			   track at all (see README.md.txt), so a control bar would be a
+			   dead volume button and a scrubber sitting on top of the artwork.
+			   Sound lives on the project page's full-length embed instead.
+
+			   Dropping it also keeps the whole card clickable: the control bar
+			   was the only reason the media had to sit above StackCard's
+			   card-wide link overlay. */
+			<video
+				class="cover"
+				poster={posterUrl}
+				autoplay
+				muted
+				loop
+				playsinline
+				preload="none"
+				disablepictureinpicture
+				tabindex="-1"
+				aria-hidden="true"
+			>
+				{sources!.map((src) => (
+					<source src={src} type={mimeFor(src)} />
+				))}
+			</video>
+		) : posterUrl ? (
+			/* No file dropped yet — the poster alone is a complete card, in the
+			   identical box, so adding the mp4 later causes no layout shift. */
+			<img
+				class="cover"
+				src={posterUrl}
+				alt=""
+				decoding="async"
+				loading="lazy"
+			/>
+		) : null
+	) : embedUrl ? (
 		<div class="video">
 			<iframe
 				src={embedUrl}
@@ -103,5 +174,20 @@ const embedUrl = toEmbedUrl(url);
 	.video__fallback {
 		font-family: var(--f-mono);
 		font-size: var(--t-sm);
+	}
+
+	/* The cover fills whatever box the caller gives it; the caller owns the
+	   clipping. `contain`, not `cover`: the caller's box is already 16:9, and
+	   `cover` would silently re-crop any source that isn't exactly that — which
+	   is the whole thing a 16:9 frame exists to avoid. */
+	.cover {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+
+	video.cover {
+		/* Letterbox against the card's own ground rather than the UA's black. */
+		background: var(--c-bg);
 	}
 </style>

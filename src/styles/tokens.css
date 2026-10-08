@@ -6,31 +6,39 @@
    this one file: change the palette, the type pairing, the spacing rhythm,
    and the whole site moves with it.
 
-   The current values are a deliberately restrained baseline — warm off-white,
-   near-black ink, one accent, monospace for metadata. Finished-looking, and a
-   clean substrate for a stronger concept.
+   The current values come from JarrettHeflin Home mock.png (in Jarrett's vault,
+   02_Projects/Website/04-Content): warm off-white ground, cool navy ink, Figtree
+   for text, monospace for metadata, and a yellow reserved entirely for the chat
+   affordance. The homepage numbers were sampled from that file rather than
+   chosen — re-measure if you change them.
    ────────────────────────────────────────────────────────────────────────── */
 
 :root {
 	/* ---- Color: light ---------------------------------------------------- */
+	/* Sampled from JarrettHeflin Home mock.png. The grounds were already right —
+	   background, card, and rule came back as the values below unchanged. What
+	   moved is the ink: from a warm near-black to a cool navy, with a slate for
+	   secondary text. */
 	--c-bg: #faf9f7;
 	--c-bg-raised: #ffffff;
-	--c-ink: #16151a;
-	--c-ink-muted: #5d5a66;
-	--c-ink-faint: #8f8b99;
-	--c-rule: #e3e0db;
+	--c-ink: #242e49;
+	--c-ink-muted: #5d6a85;
+	--c-ink-faint: #9aa1b2;
+	--c-rule: #e2e0da;
 	--c-rule-strong: #c9c5bd;
 	--c-accent: #b2401f;
 	--c-accent-ink: #ffffff;
 	--c-focus: #1f5fb2;
 
 	/* ---- Type ------------------------------------------------------------ */
-	/* System stacks: zero network cost, no layout shift, no font licensing.
-	   Swapping in a real pairing later means editing these two lines. */
-	--f-display: ui-sans-serif, system-ui, -apple-system, 'Helvetica Neue',
-		Arial, sans-serif;
-	--f-body: ui-sans-serif, system-ui, -apple-system, 'Helvetica Neue', Arial,
-		sans-serif;
+	/* Figtree, self-hosted as one 20KB variable file — see the @font-face in
+	   global.css. The system stack stays behind it as the fallback, so the
+	   pre-swap render is exactly what the site looked like before the webfont
+	   existed. */
+	--f-display: 'Figtree', ui-sans-serif, system-ui, -apple-system,
+		'Helvetica Neue', Arial, sans-serif;
+	--f-body: 'Figtree', ui-sans-serif, system-ui, -apple-system,
+		'Helvetica Neue', Arial, sans-serif;
 	--f-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
 
 	/* Fluid scale — each step interpolates between mobile and desktop so there
@@ -42,6 +50,18 @@
 	--t-lg: clamp(1.5rem, 1.3rem + 0.9vw, 2rem);
 	--t-xl: clamp(2rem, 1.6rem + 2vw, 3.25rem);
 	--t-2xl: clamp(2.75rem, 1.9rem + 4.2vw, 5.5rem);
+
+	/* Hero and card sizes, tuned to hit the mockup's measured values at its
+	   1442px viewport. Kept separate from the --t-* scale above so the project
+	   pages and prose, which the mock says nothing about, don't move with them.
+	   Targets: name 32px, headline 74px, lede 33px, links 20px, card title
+	   30px, card blurb 16px. */
+	--t-hero-name: clamp(1.25rem, 0.85rem + 1.3vw, 2rem);
+	--t-hero-head: clamp(2.25rem, 1.2rem + 4vw, 4.625rem);
+	--t-hero-lede: clamp(1.125rem, 0.9rem + 1.3vw, 2.0625rem);
+	--t-hero-link: clamp(1rem, 0.9rem + 0.4vw, 1.25rem);
+	--t-card-title: clamp(1.25rem, 1rem + 1.1vw, 1.875rem);
+	--t-card-blurb: clamp(0.9375rem, 0.9rem + 0.1vw, 1rem);
 
 	--lh-tight: 1.05;
 	--lh-snug: 1.25;
@@ -80,6 +100,8 @@
 	/* ---- Form ------------------------------------------------------------ */
 	--radius-sm: 2px;
 	--radius: 3px;
+	/* Measured off the mock's card corner: the curve resolves over ~6px. */
+	--radius-card: 6px;
 	--hairline: 1px;
 
 	/* ---- Motion ---------------------------------------------------------- */
@@ -88,43 +110,74 @@
 	--dur: 220ms;
 	--dur-slow: 420ms;
 
+	/* ---- Work stack ------------------------------------------------------
+	   The scroll-driven pile of project cards on the homepage. These are its
+	   dials: card width, the height of the text strip under the media, how far
+	   a buried card peeks above the one covering it, how much each depth
+	   shrinks, and the settle-in zoom applied to stills.
+
+	   There is deliberately no card *height* token. The media is locked to 16:9
+	   and inset from the card edge, so height falls out as
+	   `(width − 2·inset) * 9/16 + inset + --stack-text-h` — identical for every
+	   card, which is what keeps the peek offsets aligned. StackCard.astro caps
+	   the width against the viewport so a card plus three peeks fits a slot.
+
+	   Card width, media inset and strip height are measured off the mock:
+	   992px (= 62rem exactly), 29px inset on three sides, 166px strip. */
+	--stack-card-w: 62rem;
+	--stack-media-inset: 1.8125rem;
+	--stack-text-h: 10.375rem;
+	--stack-peek: 0.875rem;
+	--stack-scale-step: 0.05;
+	--stack-media-zoom: 1.35;
+
 	/* ---- Agent widget ----------------------------------------------------
-	   The blue is a deliberate break from the warm palette above: a chat
+	   The yellow is a deliberate break from the cool palette above: a chat
 	   affordance has to read as "interactive control", not "page content".
-	   To fold it into the palette instead, point --agent-blue at --c-accent. */
-	--agent-blue: #1d4ed8;
-	--agent-blue-deep: #0b2a8a;
-	--agent-blue-lift: #5b8bf7;
-	--agent-on-blue: #ffffff;
+	   To fold it into the palette instead, point --agent-field at --c-accent.
+
+	   Note --agent-on-field is a dark ink, not white. It sits on the field in
+	   three places — the orb's arcs, the sent-message bubble, and the send
+	   button — and white on yellow fails contrast in all three. If you change
+	   the field colour, re-check that this still reads against it. */
+	--agent-field: #f5b70a;
+	--agent-field-deep: #c98a00;
+	--agent-field-lift: #ffd964;
+	--agent-on-field: #241c00;
 
 	--agent-orb-size: 3.5rem;
 	--agent-panel-w: 22rem;
 	--agent-panel-bg: var(--c-bg-raised);
 	--agent-bubble-them: #eef1f8;
-	--agent-bubble-you: var(--agent-blue);
-	--agent-shadow: 0 6px 28px -8px rgb(11 42 138 / 0.35);
+	--agent-bubble-you: var(--agent-field);
+	--agent-shadow: 0 6px 28px -8px rgb(154 106 0 / 0.4);
 }
 
 /* ---- Color: dark --------------------------------------------------------
    Only the palette is redefined. Everything structural above is shared. */
 @media (prefers-color-scheme: dark) {
 	:root {
+		/* The mock is light-only, so these are derived rather than measured:
+		   the grounds stay where they were, and the inks move into the same
+		   cool navy/slate family as the light theme so the two read as one
+		   design rather than two. */
 		--c-bg: #121113;
 		--c-bg-raised: #1b1a1d;
-		--c-ink: #f2f0ed;
-		--c-ink-muted: #a8a4ae;
-		--c-ink-faint: #76727e;
-		--c-rule: #2c2a2f;
-		--c-rule-strong: #403d45;
+		--c-ink: #eef1f7;
+		--c-ink-muted: #a3adc2;
+		--c-ink-faint: #767f93;
+		--c-rule: #2c2b31;
+		--c-rule-strong: #403f4a;
 		--c-accent: #ef7a4e;
 		--c-accent-ink: #1a1013;
 		--c-focus: #7cb0ef;
 
-		/* Agent widget — lifted so the orb stays legible on a dark ground. */
-		--agent-blue: #3b6ef0;
-		--agent-blue-deep: #16307e;
-		--agent-blue-lift: #8fb4ff;
-		--agent-on-blue: #ffffff;
+		/* Agent widget — pulled back a little on a dark ground, where
+		   full-strength yellow glares. The ink on it stays dark. */
+		--agent-field: #e8ae1f;
+		--agent-field-deep: #8f6200;
+		--agent-field-lift: #ffd97a;
+		--agent-on-field: #241c00;
 		--agent-bubble-them: #26252b;
 		--agent-shadow: 0 6px 28px -8px rgb(0 0 0 / 0.6);
 	}

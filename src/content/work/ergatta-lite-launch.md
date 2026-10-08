@@ -1,0 +1,39 @@
+---
+title: Lite Rower Launch
+blurb: The introduction of Ergatta's best-selling hardware
+year: 2024
+role: Campaign Lead
+tags: [Launch, Product Marketing, Video]
+
+# Silent 16:9 cutdown, ~6–10s. See README.md.txt for the export spec.
+# coverVideo: ['/work/ergatta-lite-launch.mp4']
+
+# 3:2 source; the 16:9 frame crops ~11% and the monitor just clears the top.
+thumbnail: ../../assets/work/ergatta-lite-launch.jpg
+
+# Full-length cut — a Vimeo or YouTube URL, not a file.
+# video: https://vimeo.com/
+
+featured: false
+order: 3
+draft: false
+---
+
+I introduced the Ergatta Lite — even more beautiful to photograph, and a full
+$1,000 less — before the holidays with a CNN Underscored exclusive.
+
+It was a no-brainer: our core market was deeply rooted, but we wanted to address
+a larger, more competitive consumer base with a lower upfront cost. Working in
+tight coordination with the product, engineering, and physical engineering teams,
+we created the Ergatta Lite from scratch in six months.
+
+Leading the campaign end-to-end, I set up two shoots for studio and lifestyle
+content and unveiled a wider marketing strategy that re-envisioned Ergatta's
+website and its paid and organic presence, shifting from a one-product company to
+a multi-product brand with bundles, add-ons, and up-value opportunities. In the
+months leading up to launch, I hosted editors at the MADE Hotel in Flatiron for a
+demo week, where I negotiated placements and landed an exclusive story.
+
+The Ergatta Lite immediately became a sensation. It made up over 60% of Ergatta's
+conversions at a similar margin, with over half of buyers adding very-high-margin
+add-ons.

@@ -1,0 +1,185 @@
+---
+import { getWorkEntries, stackStepPercent, STACK_DEPTH_GONE } from '../lib/work';
+import type { WorkEntry } from '../lib/work';
+import StackCard from './StackCard.astro';
+
+/**
+ * Scroll-driven stacking cards. Zero client JS.
+ *
+ * ── The structure ────────────────────────────────────────────────────────────
+ * `.stack__track` sits in normal flow and is the view-timeline subject. Inside
+ * it each `.stack__slot` is one viewport tall and `position: sticky; top: 0`,
+ * so slot i pins when it reaches the top and stays pinned for the rest of the
+ * track. Later slots come later in DOM order, so they paint over earlier ones.
+ *
+ * That is the entire illusion, and it needs no animation at all — which is
+ * exactly why this structure was chosen over a single pinned stage with
+ * absolutely-positioned cards: the markup IS its own fallback. Strip every
+ * animation and you still have a legible page.
+ *
+ * The timeline deliberately does NOT live on a slot. A view-timeline whose
+ * subject is `position: sticky` stalls while pinned, because the subject stops
+ * moving relative to the scrollport. One timeline on the static track, read by
+ * every card, is both correct and cheaper.
+ *
+ * ── The math ─────────────────────────────────────────────────────────────────
+ * Track height H = (n + 1) viewports: n slots plus a trailing spacer.
+ *
+ * The spacer is not cosmetic. A sticky box cannot move past its containing
+ * block's content box, so slot i's maximum stuck offset is H − 1 viewport.
+ * Without the spacer that equals the LAST slot's natural offset, so the last
+ * card never pins and gets no dwell time at all.
+ *
+ * A view-timeline's default `cover` range runs from "subject's top edge at the
+ * viewport bottom" to "subject's bottom edge past the viewport top", so it
+ * spans H + 1 viewport = (n + 2) viewports of scroll. Therefore:
+ *
+ *     one viewport of scroll === 100% / (n + 2) of timeline progress
+ *
+ * Slot i pins at progress (i + 1) × step. "Depth" — how many cards cover card
+ * i — advances by exactly one per step. So every range below is a clean integer
+ * multiple of one step, and with n = 8, step is exactly 10%.
+ *
+ * Ranges are emitted as literal percentages rather than
+ * `calc(var(--i) * var(--step))` because Astro knows i and n at build time, and
+ * var() substitution of a bare percentage is better supported across engines
+ * than calc() inside `animation-range`.
+ */
+
+const entries = await getWorkEntries();
+const n = entries.length;
+
+const step = stackStepPercent(n);
+const pct = (k: number) => `${(k * step).toFixed(4)}%`;
+
+const cards = entries.map((entry: WorkEntry, i: number) => ({
+	entry,
+	index: i,
+	// Recede: depth 0 → STACK_DEPTH_GONE. End values above 100% are valid and
+	// are the correct behavior here — the last few cards are covered by fewer
+	// than three cards, so their recede legitimately never completes.
+	recedeFrom: pct(i + 1),
+	recedeTo: pct(i + 1 + STACK_DEPTH_GONE),
+	// The media settles while the card is scrolling in, before it pins.
+	mediaFrom: pct(i),
+	mediaTo: pct(i + 1),
+}));
+---
+
+<section class="stack" id="work" aria-labelledby="work-heading">
+	{/* No visible section label: the hero runs straight into the cards. The
+	    heading stays for `aria-labelledby`, and the flat index at /work/ is
+	    still reachable from the footer — which matters, because a card buried
+	    three deep is `visibility: hidden` and can't be tabbed to. */}
+	<h2 class="visually-hidden" id="work-heading">Selected work</h2>
+
+	{
+		n === 0 ? (
+			<p class="container stack__empty">
+				Nothing published yet. Add a markdown file to
+				<code>src/content/work/</code> and it will appear here.
+			</p>
+		) : (
+			<div class="stack__track">
+				{cards.map((c) => (
+					<div class="stack__slot">
+						<StackCard
+							entry={c.entry}
+							index={c.index}
+							recedeFrom={c.recedeFrom}
+							recedeTo={c.recedeTo}
+							mediaFrom={c.mediaFrom}
+							mediaTo={c.mediaTo}
+						/>
+					</div>
+				))}
+
+				{/* Dwell time for the last card — see the math note above. */}
+				<div class="stack__tail" aria-hidden="true"></div>
+			</div>
+		)
+	}
+</section>
+
+<style>
+	.stack {
+		padding-bottom: var(--s-section);
+		/* The /#work anchor every project page's back-link uses lands here. */
+		scroll-margin-top: var(--s-4);
+	}
+
+	/* The view-timeline subject. Must stay in normal flow and must not become
+	   a scroll container — see the `overflow-x: clip` note in global.css. */
+	.stack__track {
+		position: relative;
+		view-timeline-name: --work-stack;
+		view-timeline-axis: block;
+	}
+
+	.stack__slot,
+	.stack__tail {
+		/* dvh, not vh or svh: the "one slot === one step" identity holds only
+		   while slot height equals the timeline's viewport height. `vh` desyncs
+		   permanently on mobile; `dvh` desyncs only during the browser-chrome
+		   collapse transition. */
+		height: 100dvh;
+	}
+
+	.stack__slot {
+		position: sticky;
+		top: 0;
+		display: grid;
+		place-items: center;
+		/* No z-index: sticky boxes at z-index auto paint in DOM order, which is
+		   exactly the stacking order wanted — and stays below the agent
+		   widget's z-index: 50. */
+	}
+
+	.stack__empty {
+		color: var(--c-ink-muted);
+	}
+
+	.stack__empty code {
+		font-family: var(--f-mono);
+		font-size: 0.9em;
+	}
+
+	/* ---- Degradation -----------------------------------------------------
+	   Two escape hatches, both collapsing the pile into an ordinary vertical
+	   list of the SAME cards. No second DOM tree, no duplicated image loads.
+
+	   1. No scroll-driven-animation support. The pile would still stack via
+	      sticky, but with nothing scaling or fading, eight opaque cards burying
+	      each other reads as broken rather than as an effect. A plain list is
+	      the honest fallback.
+
+	   2. prefers-reduced-motion: reduce. Matches the positive `no-preference`
+	      gate in StackCard.astro — see the long note there for why the global
+	      kill-switch in global.css can't be relied on for this.
+
+	   @supports and @media can't be OR'd into one rule, so the block is written
+	   twice on purpose. Keep them in sync. */
+	@supports not (animation-timeline: view()) {
+		.stack__slot {
+			position: static;
+			height: auto;
+			padding-block: var(--s-6);
+		}
+
+		.stack__tail {
+			display: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.stack__slot {
+			position: static;
+			height: auto;
+			padding-block: var(--s-6);
+		}
+
+		.stack__tail {
+			display: none;
+		}
+	}
+</style>

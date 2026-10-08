@@ -1,0 +1,49 @@
+---
+import Base from '../../layouts/Base.astro';
+import WorkGrid from '../../components/WorkGrid.astro';
+import Footer from '../../components/Footer.astro';
+
+/**
+ * The flat index of every project.
+ *
+ * It exists for two reasons beyond convenience. The homepage presents work as
+ * a scroll-driven stack, where a card buried three deep is `visibility: hidden`
+ * and therefore unreachable by forward tabbing — this page is the keyboard and
+ * screen-reader path to the full list. And nine viewports of scrolling is a lot
+ * to ask of someone who just wants to see everything at once.
+ *
+ * No client JS, no scroll effects. Deliberately plain.
+ */
+---
+
+<Base
+	title="Work"
+	description="Every project — film, brand, and growth work by Jarrett Heflin."
+>
+	<main id="main" class="index">
+		<div class="container">
+			<p class="meta index__back">
+				<a href="/">← Home</a>
+			</p>
+		</div>
+
+		<WorkGrid heading="All work" />
+	</main>
+
+	<Footer />
+</Base>
+
+<style>
+	.index {
+		padding-top: var(--s-6);
+	}
+
+	.index__back a {
+		text-decoration: none;
+	}
+
+	/* The grid's own section-label provides the spacing below this. */
+	.index__back {
+		margin-bottom: var(--s-7);
+	}
+</style>
