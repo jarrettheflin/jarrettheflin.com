@@ -48,6 +48,24 @@ The write-up goes here, in markdown. Headings, bold, lists, and links all work.
   today and gains motion the moment a file lands, with no other edit and no
   layout shift.
 
+  **The reverse is not allowed, and the build enforces it:** a `coverVideo`
+  without a `thumbnail` fails schema validation. A cover with no poster is a
+  black rectangle anywhere the browser declines to autoplay, which mobile
+  Chrome routinely does — under Data Saver, under Battery Saver, or on its own
+  heuristics. Desktop autoplays instantly and hides the fault entirely, so it
+  ships unnoticed; two entries did exactly that.
+
+  To cut a poster from a clip you already have, pull a frame straight out of
+  the mp4 so the still and the first frame can't disagree:
+
+  ```sh
+  ffmpeg -ss 6 -i public/work/<slug>.mp4 -frames:v 1 -q:v 2 \
+    src/assets/work/<slug>.jpg
+  ```
+
+  Pick a timestamp that reads as a poster — the most legible moment in the
+  loop, not frame zero, which is often a fade-up or motion blur.
+
   ### Export spec for a cover
 
   Name the file by slug (`coach-ai.mp4` for `coach-ai.md`) and drop it in

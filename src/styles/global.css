@@ -229,6 +229,26 @@ a:hover {
 	border-radius: var(--radius);
 }
 
+/* A provider embed inside a figure. Same frame as the project page's lead
+   video (the scoped `.video` in VideoEmbed.astro) — repeated rather than
+   shared because that one is component-scoped and this markup is built by the
+   HAST plugin, which has no component to scope to. The wrapper exists because
+   an iframe cannot be given an aspect ratio and clipped reliably on its own. */
+.prose .figure > .figure__video {
+	aspect-ratio: 16 / 9;
+	width: 100%;
+	background: var(--c-bg-raised);
+	border: var(--hairline) solid var(--c-rule);
+	border-radius: var(--radius);
+	overflow: hidden;
+}
+
+.prose .figure > .figure__video > iframe {
+	width: 100%;
+	height: 100%;
+	border: 0;
+}
+
 .prose .figure__caption {
 	/* `.meta` supplies the mono/uppercase treatment; this is only the
 	   placement. Hanging it under the left edge of the media ties it to the

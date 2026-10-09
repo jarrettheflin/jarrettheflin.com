@@ -9,7 +9,11 @@ tags: [Product Marketing, Video, Games]
 # for this video. A 1080p master would sharpen it on Retina screens.
 coverVideo: ['/work/ergatta-experience.mp4']
 
-# thumbnail: ../../assets/work/ergatta-experience.jpg
+# Doubles as the cover's poster frame, and is not optional in practice: without
+# it a card is a black rectangle until the browser decides to autoplay, which
+# on mobile Chrome it often declines to do. Pulled from the mp4 itself so the
+# still and the first frame can't disagree.
+thumbnail: ../../assets/work/ergatta-experience.jpg
 
 # Full-length cut — a Vimeo or YouTube URL, not a file.
 video: https://vimeo.com/846670219
@@ -30,6 +34,8 @@ repurposed lifestyle B-roll to create a seamless story at a fraction of the cost
 ![](../../assets/work/ergatta-experience-trailer.jpg "Crew shooting lifestyle B-roll of a rower on an Ergatta rower in a sunlit living room")
 
 ![](../../assets/work/ergatta-experience-shoot.jpg "Camera operator on a gimbal tracking alongside a rower mid-stroke on set")
+
+![Follow-on campaigns, shot in Greenpoint, NYC](https://www.youtube.com/watch?v=SpO8Tz8p9oY)
 
 Truly a new backbone of Ergatta's digital presence, the trailer and its cutdown
 content yielded a 15% conversion increase in paid prospecting campaigns, 70%

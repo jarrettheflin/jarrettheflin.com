@@ -11,6 +11,14 @@
  *   ![On set in Simi Valley](../../assets/work/shot.jpg)
  *                                                → figure + <figcaption>
  *   ![](/work/clip.mp4)                          → silent looping <video>
+ *   ![](https://youtu.be/<id>)                   → lazy 16:9 player, with sound
+ *
+ * The last of those is the odd one out and the distinction is worth keeping:
+ * a self-hosted `.mp4` is *texture* — silent, looping, chromeless, the same
+ * treatment as the homepage covers — while a provider URL is something the
+ * visitor is being invited to sit and watch, so it keeps its controls and its
+ * audio. Use a file for a clip that runs under the prose and a URL for a cut
+ * that deserves a play button.
  *
  * ┌───────────────────────────────────────────────────────────────────────┐
  * │ The alt slot is the CAPTION, not the alt text.                        │
@@ -48,6 +56,8 @@
  * gets optimized; a root-relative path reaches `public/` untouched. Video has
  * to be the latter — Astro's asset pipeline cannot optimize video.
  */
+
+import { EMBED_IFRAME_ALLOW, toEmbedUrl } from './video.js';
 
 /** Extensions routed to <video> rather than <img>. Matches the schema's
  *  `coverVideo` pattern — the same two codecs, for the same reason. */
@@ -88,7 +98,51 @@ export function inlineFigures() {
 				const caption = typeof props.alt === 'string' ? props.alt.trim() : '';
 				const alt = typeof props.title === 'string' ? props.title : '';
 
-				const media = VIDEO_EXT.test(src)
+				/* A provider URL, before the file branches: those test the
+				   extension, and a watch URL has none to test. Unrecognized
+				   hosts fall through to the image branch and are left to the
+				   asset pipeline, which fails loudly on a missing file — a
+				   better outcome than silently shipping a broken iframe. */
+				const embedUrl = /^https?:\/\//i.test(src) ? toEmbedUrl(src) : null;
+
+				const media = embedUrl
+					? {
+							/* The same lazy 16:9 frame VideoEmbed renders for an
+							   entry's `video:` field, and deliberately so — but
+							   built by hand here, because a satteri plugin emits
+							   HAST and cannot reach for an .astro component.
+							   `.figure__video` in global.css carries what the
+							   component's scoped `.video` carries.
+
+							   Keep the iframe attributes in step with
+							   VideoEmbed.astro; `allow` is shared through
+							   EMBED_IFRAME_ALLOW so the longest of them cannot
+							   drift on its own. */
+							type: 'element',
+							tagName: 'div',
+							properties: { className: ['figure__video'] },
+							children: [
+								{
+									type: 'element',
+									tagName: 'iframe',
+									properties: {
+										src: embedUrl,
+										/* An iframe's accessible name has to come from
+										   the markdown, and the caption is the only
+										   description an author writes. Falling back to
+										   a generic name keeps it from being announced
+										   as an unlabelled frame. */
+										title: alt || caption || 'Embedded video',
+										loading: 'lazy',
+										allow: EMBED_IFRAME_ALLOW,
+										allowfullscreen: true,
+										referrerpolicy: 'strict-origin-when-cross-origin',
+									},
+									children: [],
+								},
+							],
+						}
+					: VIDEO_EXT.test(src)
 					? {
 							type: 'element',
 							tagName: 'video',

@@ -1,6 +1,7 @@
 ---
 import { getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
+import { EMBED_IFRAME_ALLOW, toEmbedUrl } from '../lib/video.js';
 
 /**
  * The single seam for how video is presented. Two modes:
@@ -33,48 +34,8 @@ interface Props {
 
 const { mode = 'embed', url, sources, poster, title } = Astro.props;
 
-/**
- * Turn a watch/share URL into a privacy-friendly embed URL.
- * Returns null for anything unrecognized so the caller can degrade to a link
- * rather than render a broken iframe.
- */
-function toEmbedUrl(raw: string): string | null {
-	let parsed: URL;
-	try {
-		parsed = new URL(raw);
-	} catch {
-		return null;
-	}
-
-	const host = parsed.hostname.replace(/^www\./, '');
-
-	// youtu.be/<id>
-	if (host === 'youtu.be') {
-		const id = parsed.pathname.slice(1);
-		return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
-	}
-
-	// youtube.com/watch?v=<id> | /embed/<id> | /shorts/<id>
-	if (host === 'youtube.com' || host === 'youtube-nocookie.com') {
-		const id =
-			parsed.searchParams.get('v') ??
-			parsed.pathname.match(/\/(?:embed|shorts)\/([\w-]+)/)?.[1];
-		return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
-	}
-
-	// vimeo.com/<id> | vimeo.com/<id>/<hash> for unlisted videos
-	if (host === 'vimeo.com') {
-		const [id, hash] = parsed.pathname.split('/').filter(Boolean);
-		if (!/^\d+$/.test(id ?? '')) return null;
-		return `https://player.vimeo.com/video/${id}${hash ? `?h=${hash}` : ''}`;
-	}
-
-	// player.vimeo.com/video/<id> — already an embed URL.
-	if (host === 'player.vimeo.com') return parsed.toString();
-
-	return null;
-}
-
+/* `toEmbedUrl` lives in src/lib/video.js — the inline-figures plugin needs the
+   same mapping, and two copies would drift. */
 const embedUrl = mode === 'embed' && url ? toEmbedUrl(url) : null;
 
 // The poster goes through the asset pipeline, so it's the same optimized file
@@ -140,7 +101,7 @@ const hasSources = Boolean(sources && sources.length > 0);
 				src={embedUrl}
 				title={`${title} — video`}
 				loading="lazy"
-				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+				allow={EMBED_IFRAME_ALLOW}
 				allowfullscreen
 				referrerpolicy="strict-origin-when-cross-origin"
 			/>

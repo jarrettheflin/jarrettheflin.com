@@ -45,7 +45,26 @@ const work = defineCollection({
 			// Lower numbers sort first; entries without it fall to the back by year.
 			order: z.number().optional(),
 			draft: z.boolean().default(false),
-		}),
+		})
+			/**
+			 * A cover with no poster is a black rectangle wherever the browser
+			 * declines to autoplay — which mobile Chrome routinely does, under
+			 * Data Saver, Battery Saver, or just its own heuristics. Desktop
+			 * autoplays instantly and hides the fault completely, so this is
+			 * exactly the kind of thing that ships unnoticed. Two entries did.
+			 *
+			 * Failing the build is the proportionate response: the fix is to
+			 * pull a frame out of the mp4 and point `thumbnail` at it, which
+			 * takes a minute, and the alternative is a dead card on the
+			 * homepage that nobody on a laptop will ever see.
+			 */
+			.refine((data) => !data.coverVideo || data.thumbnail, {
+				message:
+					'An entry with `coverVideo` must also set `thumbnail` — it is the ' +
+					'poster frame, and without it the card renders black until autoplay ' +
+					'starts. Extract a still from the mp4 into src/assets/work/.',
+				path: ['thumbnail'],
+			}),
 });
 
 export const collections = { work };

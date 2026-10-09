@@ -8,8 +8,11 @@ tags: [Brand, Partnership, Video]
 # Silent 8s loop, 00:28–00:36, cut from the 1080p ProRes master.
 coverVideo: ['/work/kaepernick-ergatta.mp4']
 
-# Doubles as the cover's poster frame. Path is relative to this file.
-# thumbnail: ../../assets/work/kaepernick-ergatta.jpg
+# Doubles as the cover's poster frame. Path is relative to this file. Not
+# optional in practice: without it a card is a black rectangle until the
+# browser decides to autoplay, which on mobile Chrome it often declines to do.
+# Pulled from the mp4 itself so the still and the first frame can't disagree.
+thumbnail: ../../assets/work/kaepernick-ergatta.jpg
 
 # Full-length cut — a Vimeo or YouTube URL, not a file.
 video: https://vimeo.com/645409929
