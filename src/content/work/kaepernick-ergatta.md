@@ -5,7 +5,7 @@ year: 2021
 role: Campaign Lead, Production
 tags: [Brand, Partnership, Video]
 
-# Silent 10s loop, 00:47–00:57, cut from the 1080p ProRes master.
+# Silent 8s loop, 00:28–00:36, cut from the 1080p ProRes master.
 coverVideo: ['/work/kaepernick-ergatta.mp4']
 
 # Doubles as the cover's poster frame. Path is relative to this file.

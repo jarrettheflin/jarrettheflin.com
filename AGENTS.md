@@ -114,8 +114,11 @@ Two problems this avoids, worth knowing before adding `controls` back:
 **Site identity and links are in `src/consts.ts`**, not hardcoded in components.
 `SITE.url` must stay in sync with `site` in `astro.config.mjs`.
 
-**Dark mode** is `prefers-color-scheme` only, overriding tokens. There is no
-theme toggle.
+**The site is dark-only**, regardless of the visitor's system setting — Jarrett's
+choice. The dark palette is the only one in `tokens.css` (with `color-scheme:
+dark` on `:root`); the original light values are kept in a comment there.
+There is no theme toggle. `public/favicon.svg` still follows the OS theme, on
+purpose: it sits on the browser's tab bar, not the page.
 
 **Client-side JS exists in exactly one place:** the inline script in
 `src/components/AgentWidget.astro`, rendered on the homepage only. It is
@@ -124,8 +127,8 @@ framework runtime on every page. Project pages ship zero JS. Don't add a UI
 framework for the widget's sake.
 
 That script binds **every** element on the page carrying `[data-agent-open]`,
-not just its own orb. That is how the hero's "Email" button opens the chat
-without a second script — and it is the reason the mockup's Email link could be
+not just its own orb. That is how the hero's "Get in touch" button opens the chat
+without a second script — and it is the reason the mockup's Email link (now "Get in touch") could be
 honoured without a `mailto:`. Anything else that should open the agent just
 needs the attribute. Focus returns to whichever trigger opened the panel.
 

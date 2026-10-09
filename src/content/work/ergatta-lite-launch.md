@@ -5,7 +5,7 @@ year: 2024
 role: Campaign Lead
 tags: [Launch, Product Marketing, Video]
 
-# Silent 16:9 cutdown, ~6–10s. See README.md.txt for the export spec.
+# Silent 16:9 cutdown, any length. See README.md.txt for the export spec.
 # coverVideo: ['/work/ergatta-lite-launch.mp4']
 
 # 3:2 source; the 16:9 frame crops ~11% and the monitor just clears the top.

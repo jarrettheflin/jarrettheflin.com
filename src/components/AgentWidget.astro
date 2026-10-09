@@ -129,7 +129,7 @@ import { GREETING } from '../lib/agent-prompt';
 
 		/* The orb is this widget's own trigger — it owns aria-expanded. But any
 		   element on the page carrying [data-agent-open] opens the panel too
-		   (the hero's "Email" button is one), which is how that button needs no
+		   (the hero's "Get in touch" button is one), which is how that button needs no
 		   script of its own and client JS stays in exactly one file. */
 		const orb = root.querySelector('[data-agent-open]');
 		const triggers = document.querySelectorAll('[data-agent-open]');
@@ -198,7 +198,7 @@ import { GREETING } from '../lib/agent-prompt';
 			root.dataset.open = 'true';
 
 			/* Greet whenever the conversation is empty, not just on a first-ever
-			   visit. Someone who clicks "Email" is asking to be introduced and
+			   visit. Someone who clicks "Get in touch" is asking to be introduced and
 			   should always get Sunny's opening line; SEEN_KEY below only
 			   governs whether the panel opens *unprompted*. */
 			if (!log.children.length) {

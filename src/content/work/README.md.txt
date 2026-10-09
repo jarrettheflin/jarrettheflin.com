@@ -58,7 +58,10 @@ The write-up goes here, in markdown. Headings, bold, lists, and links all work.
     letterboxed against the card background. The card renders about 960 CSS px
     wide, which is 1920 device px on a Retina screen, so 1080p is what keeps it
     sharp. 1280×720 is acceptable if file size fights you.
-  - **6–10 seconds**, cut to loop without an obvious seam.
+  - **Any length that suits the shot** — pick the in/out points for the
+    moment, not a fixed duration. Nothing in the code assumes a length; the
+    loop just restarts. The real limit is the 3 MB budget below, so a longer
+    cut needs a lower bitrate. Cut it to loop without an obvious seam.
   - **No audio track** — stripped, not just muted. The card has no controls, so
     audio on it would be unreachable anyway; sound belongs on the full-length
     embed. (The player is also the reason covers stay silent: without controls

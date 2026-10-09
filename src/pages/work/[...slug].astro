@@ -187,7 +187,11 @@ const { Content } = await render(entry);
 		border-radius: var(--radius);
 	}
 
+	/* Full width, matching the video above it. The global .prose measure
+	   (34rem) left the write-up at half the video's width, which read as
+	   undersized next to it. */
 	.project__prose {
+		max-width: none;
 		margin-top: var(--s-7);
 	}
 

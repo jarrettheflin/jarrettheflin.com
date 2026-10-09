@@ -19,7 +19,7 @@ import { SITE, LINKS } from '../consts';
 		    AGENTS.md); `data-agent-open` is picked up by the agent widget's
 		    script, which binds every element carrying it — so this needs no
 		    JavaScript of its own and client JS stays in exactly one file. */}
-		<button class="hero__link" type="button" data-agent-open>Email</button>
+		<button class="hero__link" type="button" data-agent-open>Get in touch</button>
 		{
 			LINKS.map((link) => (
 				<a class="hero__link" href={link.href}>
@@ -42,7 +42,7 @@ import { SITE, LINKS } from '../consts';
 		/* Fluid rather than fixed: the hero is sticky, so this space is also
 		   the gap the cards travel into. A flat 6rem would eat too much of a
 		   short viewport. */
-		padding-top: clamp(var(--s-7), 8vh, var(--s-9));
+		padding-top: clamp(var(--s-8), 12vh, var(--s-10));
 		padding-bottom: var(--s-6);
 
 		/* Not `.container`. The mock hangs the hero's left edge outside the
@@ -94,11 +94,11 @@ import { SITE, LINKS } from '../consts';
 		display: flex;
 		flex-wrap: wrap;
 		align-items: baseline;
-		gap: var(--s-2) var(--s-5);
+		gap: var(--s-2) var(--s-4);
 		margin-top: var(--s-6);
 	}
 
-	/* One rule for both the button and the anchors, so "Email" and "LinkedIn"
+	/* One rule for both the button and the anchors, so "Get in touch" and "LinkedIn"
 	   are typographically identical despite being different elements. */
 	.hero__link {
 		font-family: inherit;

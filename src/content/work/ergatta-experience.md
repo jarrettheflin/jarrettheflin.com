@@ -5,7 +5,7 @@ year: 2022
 role: Producer
 tags: [Product Marketing, Video, Games]
 
-# Silent 10s loop, 00:18–00:28. 960x540 — the highest rendition Vimeo holds
+# Silent 17s loop, 00:20–00:37. 960x540 — the highest rendition Vimeo holds
 # for this video. A 1080p master would sharpen it on Retina screens.
 coverVideo: ['/work/ergatta-experience.mp4']
 
