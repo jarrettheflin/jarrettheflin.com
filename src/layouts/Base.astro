@@ -84,16 +84,7 @@ const socialImage = image ? new URL(image, Astro.site) : null;
 		{socialImage && <meta name="twitter:image" content={socialImage} />}
 
 		<!-- Matches the token palette so browser chrome doesn't clash. -->
-		<meta
-			name="theme-color"
-			content="#faf9f7"
-			media="(prefers-color-scheme: light)"
-		/>
-		<meta
-			name="theme-color"
-			content="#121113"
-			media="(prefers-color-scheme: dark)"
-		/>
+		<meta name="theme-color" content="#121113" />
 	</head>
 
 	<body>

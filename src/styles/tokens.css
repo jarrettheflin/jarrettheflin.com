@@ -14,21 +14,31 @@
    ────────────────────────────────────────────────────────────────────────── */
 
 :root {
-	/* ---- Color: light ---------------------------------------------------- */
-	/* Sampled from JarrettHeflin Home mock.png. The grounds were already right —
-	   background, card, and rule came back as the values below unchanged. What
-	   moved is the ink: from a warm near-black to a cool navy, with a slate for
-	   secondary text. */
-	--c-bg: #faf9f7;
-	--c-bg-raised: #ffffff;
-	--c-ink: #242e49;
-	--c-ink-muted: #5d6a85;
-	--c-ink-faint: #9aa1b2;
-	--c-rule: #e2e0da;
-	--c-rule-strong: #c9c5bd;
-	--c-accent: #b2401f;
-	--c-accent-ink: #ffffff;
-	--c-focus: #1f5fb2;
+	/* ---- Color: dark, always -------------------------------------------- */
+	/* The site is dark regardless of the visitor's system setting — Jarrett's
+	   call. These were derived from the light mock rather than measured: the
+	   inks sit in the same cool navy/slate family as the mock's so the site
+	   still reads as that design.
+
+	   The original light palette, sampled from JarrettHeflin Home mock.png,
+	   for if it's ever wanted back (e.g. under a prefers-color-scheme query):
+	   bg #faf9f7, bg-raised #ffffff, ink #242e49, ink-muted #5d6a85,
+	   ink-faint #9aa1b2, rule #e2e0da, rule-strong #c9c5bd, accent #b2401f,
+	   accent-ink #ffffff, focus #1f5fb2; agent field #f5b70a, field-deep
+	   #c98a00, field-lift #ffd964, bubble-them #eef1f8, shadow
+	   0 6px 28px -8px rgb(154 106 0 / 0.4). */
+	color-scheme: dark; /* native scrollbars, inputs and autofill follow suit */
+
+	--c-bg: #121113;
+	--c-bg-raised: #1b1a1d;
+	--c-ink: #eef1f7;
+	--c-ink-muted: #a3adc2;
+	--c-ink-faint: #767f93;
+	--c-rule: #2c2b31;
+	--c-rule-strong: #403f4a;
+	--c-accent: #ef7a4e;
+	--c-accent-ink: #1a1013;
+	--c-focus: #7cb0ef;
 
 	/* ---- Type ------------------------------------------------------------ */
 	/* Figtree, self-hosted as one 20KB variable file — see the @font-face in
@@ -139,46 +149,19 @@
 	   Note --agent-on-field is a dark ink, not white. It sits on the field in
 	   three places — the orb's arcs, the sent-message bubble, and the send
 	   button — and white on yellow fails contrast in all three. If you change
-	   the field colour, re-check that this still reads against it. */
-	--agent-field: #f5b70a;
-	--agent-field-deep: #c98a00;
-	--agent-field-lift: #ffd964;
+	   the field colour, re-check that this still reads against it.
+
+	   The yellow is pulled back a little from full strength, which glares on
+	   a dark ground. */
+	--agent-field: #e8ae1f;
+	--agent-field-deep: #8f6200;
+	--agent-field-lift: #ffd97a;
 	--agent-on-field: #241c00;
 
 	--agent-orb-size: 3.5rem;
 	--agent-panel-w: 22rem;
 	--agent-panel-bg: var(--c-bg-raised);
-	--agent-bubble-them: #eef1f8;
+	--agent-bubble-them: #26252b;
 	--agent-bubble-you: var(--agent-field);
-	--agent-shadow: 0 6px 28px -8px rgb(154 106 0 / 0.4);
-}
-
-/* ---- Color: dark --------------------------------------------------------
-   Only the palette is redefined. Everything structural above is shared. */
-@media (prefers-color-scheme: dark) {
-	:root {
-		/* The mock is light-only, so these are derived rather than measured:
-		   the grounds stay where they were, and the inks move into the same
-		   cool navy/slate family as the light theme so the two read as one
-		   design rather than two. */
-		--c-bg: #121113;
-		--c-bg-raised: #1b1a1d;
-		--c-ink: #eef1f7;
-		--c-ink-muted: #a3adc2;
-		--c-ink-faint: #767f93;
-		--c-rule: #2c2b31;
-		--c-rule-strong: #403f4a;
-		--c-accent: #ef7a4e;
-		--c-accent-ink: #1a1013;
-		--c-focus: #7cb0ef;
-
-		/* Agent widget — pulled back a little on a dark ground, where
-		   full-strength yellow glares. The ink on it stays dark. */
-		--agent-field: #e8ae1f;
-		--agent-field-deep: #8f6200;
-		--agent-field-lift: #ffd97a;
-		--agent-on-field: #241c00;
-		--agent-bubble-them: #26252b;
-		--agent-shadow: 0 6px 28px -8px rgb(0 0 0 / 0.6);
-	}
+	--agent-shadow: 0 6px 28px -8px rgb(0 0 0 / 0.6);
 }
