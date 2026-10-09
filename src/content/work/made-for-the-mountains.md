@@ -33,6 +33,8 @@ college students to ski and training new instructors.
 My wife grew up skiing at Kirkwood, and we have the great joy of spending many
 weekends together up in the mountains with our dog Loon.
 
+![Lake Louise, Banff](../../assets/work/made-for-the-mountains-lake-louise.jpg "Two skiers above a valley, the Rockies running along the skyline behind them")
+
 ![Vallée Blanche, Chamonix](../../assets/work/made-for-the-mountains-vallee-blanche.jpg "Skier standing on the glacier floor, granite spires and seracs rising on every side")
 
 ![Mont Blanc glacier falls](../../assets/work/made-for-the-mountains-mont-blanc.jpg "Four skiers picking a line down through the seracs of an icefall")
