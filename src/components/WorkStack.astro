@@ -66,12 +66,12 @@ const cards = entries.map((entry: WorkEntry, i: number) => ({
 }));
 ---
 
-<section class="stack" id="work" aria-labelledby="work-heading">
+<section class="stack" id="projects" aria-labelledby="projects-heading">
 	{/* No visible section label: the hero runs straight into the cards. The
-	    heading stays for `aria-labelledby`, and the flat index at /work/ is
+	    heading stays for `aria-labelledby`, and the flat index at /projects/ is
 	    still reachable from the footer — which matters, because a card buried
 	    three deep is `visibility: hidden` and can't be tabbed to. */}
-	<h2 class="visually-hidden" id="work-heading">Selected work</h2>
+	<h2 class="visually-hidden" id="projects-heading">Selected projects</h2>
 
 	{
 		n === 0 ? (
@@ -104,7 +104,7 @@ const cards = entries.map((entry: WorkEntry, i: number) => ({
 <style>
 	.stack {
 		padding-bottom: var(--s-section);
-		/* The /#work anchor every project page's back-link uses lands here. */
+		/* The /#projects anchor every project page's back-link uses lands here. */
 		scroll-margin-top: var(--s-4);
 	}
 

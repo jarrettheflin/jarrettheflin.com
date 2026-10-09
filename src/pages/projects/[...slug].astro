@@ -12,7 +12,7 @@ import type { WorkEntry } from '../../lib/work';
  * Adding a project never requires touching this file.
  *
  * The draft filter lives in src/lib/work.ts, shared with the homepage stack and
- * the /work/ index — so a project can never be listed somewhere it wasn't
+ * the /projects/ index — so a project can never be listed somewhere it wasn't
  * actually built.
  */
 export async function getStaticPaths() {
@@ -45,7 +45,7 @@ const { Content } = await render(entry);
 	<main id="main" class="project">
 		<div class="container">
 			<p class="meta project__back">
-				<a href="/#work">← All work</a>
+				<a href="/#projects">← All projects</a>
 			</p>
 
 			<header class="project__header">

@@ -52,8 +52,16 @@ const socialImage = image ? new URL(image, Astro.site) : null;
 			crossorigin
 		/>
 
-		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-		<link rel="icon" href="/favicon.ico" sizes="32x32" />
+		{/* Jarrett's JH mark, from jarrettheflin-tab-logo.png in the vault.
+		    One flat artwork at several sizes: it replaced a theme-reactive SVG
+		    favicon, so the tab icon is now the same mark in light and dark
+		    chrome — which is the point of a logo. 32px is the tab itself;
+		    the larger two are for bookmarks, home screens and install
+		    prompts, which upscale a 32px source into mush. */}
+		<link rel="icon" href="/favicon.png" type="image/png" sizes="32x32" />
+		<link rel="icon" href="/icon-192.png" type="image/png" sizes="192x192" />
+		<link rel="icon" href="/icon-512.png" type="image/png" sizes="512x512" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<link rel="sitemap" href="/sitemap-index.xml" />
 
 		<!-- Open Graph -->

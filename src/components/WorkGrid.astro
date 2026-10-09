@@ -4,7 +4,7 @@ import type { WorkEntry } from '../lib/work';
 import WorkCard from './WorkCard.astro';
 
 /**
- * The flat, unanimated index of every project — now the body of `/work/`.
+ * The flat, unanimated index of every project — now the body of `/projects/`.
  *
  * The homepage uses WorkStack.astro instead. This grid stays because it is the
  * canonical keyboard and screen-reader path to the full list: in the stack, a
@@ -20,14 +20,14 @@ interface Props {
 	heading?: string;
 }
 
-const { heading = 'Selected work' } = Astro.props;
+const { heading = 'Selected projects' } = Astro.props;
 
 const sorted = await getWorkEntries();
 ---
 
-<section class="work container" id="work" aria-labelledby="work-heading">
+<section class="work container" id="projects" aria-labelledby="projects-heading">
 	<div class="section-label">
-		<h2 class="meta work__label" id="work-heading">{heading}</h2>
+		<h2 class="meta work__label" id="projects-heading">{heading}</h2>
 		<span class="meta work__count">{sorted.length}</span>
 	</div>
 

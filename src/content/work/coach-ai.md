@@ -26,7 +26,13 @@ program that grades your rowing technique through a phone camera set up to the
 side. I worked closely with the product team on the creation of the feature and a
 new gamified platform for evaluating and improving rowing technique.
 
+![](../../assets/work/coach-ai-analysis.png "Coach AI tracking a rower's joints mid-stroke through a phone camera")
+
 In the run-up to launch, I led a film production in Brooklyn and demoed Coach AI
 at CES, landing announcement coverage in
 [Forbes](https://www.forbes.com/sites/anthonykarcz/2024/01/06/ergatta-wants-to-transform-your-fitness-with-its-game-based-rowers/)
 and executing a full lifecycle campaign that boosted reactivations by over 20%.
+
+![](../../assets/work/coach-ai-shoot-camera.jpg "Camera framed on a rower during the Brooklyn shoot")
+
+![](../../assets/work/coach-ai-shoot-crew.jpg "The crew setting up a lighting rig around the rower on the Brooklyn set")

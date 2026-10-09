@@ -1,14 +1,21 @@
 ## What this is
 
 Jarrett Heflin's personal site and living portfolio. An Astro site: a homepage
-(bio, then a scroll-driven stack of project cards), a flat index at `/work/`,
-and a generated page per project at `/work/<slug>`. Deployed to Vercel on push
-to `main`.
+(bio, then a scroll-driven stack of project cards), a flat index at
+`/projects/`, and a generated page per project at `/projects/<slug>`. Deployed
+to Vercel on push to `main`.
 
-`/work/` is not just a convenience — it's the keyboard and screen-reader path
-to the full list, because a card buried deep in the homepage stack becomes
+`/projects/` is not just a convenience — it's the keyboard and screen-reader
+path to the full list, because a card buried deep in the homepage stack becomes
 `visibility: hidden` and can't be reached by tabbing forward. Don't delete it
 without replacing that path.
+
+**The section is "Projects" in the UI and `work` in the code.** Every visible
+label reads Projects; the collection, `src/content/work/`, `src/lib/work.ts`
+and the `Work*` components kept their names, because renaming them moves every
+content file and buys nothing a visitor can see. The route moved, so
+`astro.config.mjs` carries `redirects` from `/work` and `/work/[...slug]` —
+links shared before the rename still resolve. Don't drop them.
 
 **Almost entirely static.** `output` stays at its default `'static'` and every
 page prerenders. There is exactly one on-demand route — `src/pages/api/agent.ts`,
@@ -38,6 +45,25 @@ touches `consts.ts`, the footer, the hero, or the agent.
 `src/content/work/` — the grid card and the project page generate themselves.
 Schema and field docs: `src/content.config.ts` and
 `src/content/work/README.md.txt`.
+
+**Inline figures in a write-up are markdown, not components.** An image alone
+in its own paragraph becomes a captioned `<figure>` — `src/lib/figures.js`, a
+satteri HAST plugin registered in `astro.config.mjs`. The authoring rule that
+surprises people is in that file's header box: **the alt slot is the caption,
+the title slot is the alt text**, because the requirement was "no caption
+unless one is written" and alt is the slot an author reaches for first. A
+`.mp4`/`.webm` path renders a silent looping `<video>` instead of an `<img>`.
+
+Two things there are load-bearing:
+
+- It visits `p`, not `img`, and replaces the whole paragraph. A `<figure>`
+  nested in a `<p>` is invalid and browsers close the paragraph early.
+- It must emit a real `img` element. Astro's image marker runs *after* every
+  user HAST plugin, so a genuine `<img>` still gets optimized and given a
+  srcset; a raw HTML node would silently ship the unprocessed original. For
+  the same reason the `<img>` carries no class — a class on an image comes out
+  twice, as `class` and as a literal `className` attribute — so the CSS in
+  `global.css` reaches it through `.figure > :is(img, video)`.
 
 **All visual decisions live in `src/styles/tokens.css`** as CSS custom
 properties — palette, type stacks, type scale, spacing, radii, motion. Components
@@ -117,8 +143,14 @@ Two problems this avoids, worth knowing before adding `controls` back:
 **The site is dark-only**, regardless of the visitor's system setting — Jarrett's
 choice. The dark palette is the only one in `tokens.css` (with `color-scheme:
 dark` on `:root`); the original light values are kept in a comment there.
-There is no theme toggle. `public/favicon.svg` still follows the OS theme, on
-purpose: it sits on the browser's tab bar, not the page.
+There is no theme toggle.
+
+**The favicon is Jarrett's JH mark** — `jarrettheflin-tab-logo.png` in the
+vault, exported by `sips` to `public/favicon.png` (32), `icon-192.png`,
+`icon-512.png` and `apple-touch-icon.png` (180). It replaced a theme-reactive
+SVG favicon, so the tab icon no longer follows the OS theme: it is one flat
+artwork, which is what a logo should be. Re-export all four from the 1000px
+source if the mark changes.
 
 **Client-side JS exists in exactly one place:** the inline script in
 `src/components/AgentWidget.astro`, rendered on the homepage only. It is

@@ -1,7 +1,7 @@
 # Adding a project
 
 Drop a new `.md` file in this folder. The filename becomes the URL:
-`spondi-brand-film.md` → `jarrettheflin.com/work/spondi-brand-film/`
+`spondi-brand-film.md` → `jarrettheflin.com/projects/spondi-brand-film/`
 
 Nothing else to edit — the card and the project page generate themselves.
 
@@ -91,6 +91,67 @@ The write-up goes here, in markdown. Headings, bold, lists, and links all work.
 - **`order`** — manual grid position. Entries without it sort by year, newest
   first, behind any that have it.
 - **`draft`** — `true` keeps it visible in `npm run dev` but out of production.
+
+## Images inside the write-up
+
+Put an image on **a line of its own**, with a blank line above and below, and
+it becomes a figure sitting in the copy:
+
+```markdown
+We constructed an apartment scene and suspended a 10,000 lb LED screen over a
+40' x 40' reflection pool.
+
+![](../../assets/work/kaepernick-ergatta-crew.jpg)
+
+We executed this campaign across paid and earned media channels.
+```
+
+Same relative path as `thumbnail` — drop the file in `src/assets/work/` and
+point at it. Astro optimizes and resizes it, so commit the full-size export.
+Figures render narrower than the text column and leave a wide gap above and
+below, which is what keeps them reading as pictures *in* the piece rather than
+as section breaks. Nothing to space by hand.
+
+### Captions
+
+**The text in the square brackets is the caption.** Leave it empty and there
+is no caption — that's the default:
+
+```markdown
+![](../../assets/work/shot.jpg)                        no caption
+![Game On production team leads](../../assets/work/shot.jpg)   captioned
+```
+
+This is backwards from normal markdown, where the brackets hold alt text. It's
+deliberate: the brackets are the slot you reach for without thinking, and the
+rule is "no caption unless I write one."
+
+Alt text — the description a screen reader reads out — goes in quotes after
+the path:
+
+```markdown
+![](../../assets/work/shot.jpg "Twelve crew members on a sound stage")
+```
+
+A captioned image needs no separate alt text; the caption does that job, and
+adding both makes a screen reader say the same thing twice. Use the quoted
+form for images that carry no caption but still need describing.
+
+### Clips
+
+Point at an `.mp4` or `.webm` in `public/work/` instead and you get a silent
+looping clip in the same frame, captioned the same way:
+
+```markdown
+![](/work/kaepernick-ergatta-set.mp4)
+```
+
+Root-relative, not a relative path — Astro can't optimize video, so these live
+in `public/` like the covers do. The export spec above applies, with one
+change: these are not card art, so the 16:9 requirement doesn't hold — any
+aspect ratio is fine and the frame follows the file. 1280×720 is plenty, since
+a figure renders at roughly half the page width. Strip the audio (there are no
+controls, so nothing could unmute it) and keep it near 1–2 MB.
 
 ## Sort order
 

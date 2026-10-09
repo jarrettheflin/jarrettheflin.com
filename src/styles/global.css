@@ -193,6 +193,53 @@ a:hover {
 	padding-left: var(--s-5);
 }
 
+/* ---- Inline figures ----------------------------------------------------
+   An image or clip dropped into a write-up, built by the `inline-figures`
+   HAST plugin in src/lib/figures.js from a markdown image standing alone in
+   its own paragraph. See that file for the authoring rules.
+
+   Two decisions worth keeping:
+
+   - Narrower than the column it sits in (--figure-w), and left-aligned
+     against it. Project prose runs the full container width, so a figure at
+     100% would read as a second lead image interrupting the piece rather
+     than a picture inside it. Capped at 100% so it still fits on a phone,
+     where the column is already narrower than the cap.
+   - The vertical gap is set on the figure itself and is deliberately much
+     larger than the --s-5 between paragraphs, which is what separates
+     "copy with pictures in it" from "copy and pictures in a single run".
+     It overrides `.prose > * + *` rather than adding to it, hence the
+     `margin-bottom` too: consecutive figures need the same air as a figure
+     against a paragraph. */
+.prose .figure {
+	--figure-w: 42rem;
+
+	width: min(var(--figure-w), 100%);
+	margin-top: var(--s-8);
+	margin-bottom: var(--s-8);
+}
+
+.prose .figure:last-child {
+	margin-bottom: 0;
+}
+
+.prose .figure > :is(img, video) {
+	width: 100%;
+	border: var(--hairline) solid var(--c-rule);
+	border-radius: var(--radius);
+}
+
+.prose .figure__caption {
+	/* `.meta` supplies the mono/uppercase treatment; this is only the
+	   placement. Hanging it under the left edge of the media ties it to the
+	   picture rather than to the body column. */
+	margin-top: var(--s-3);
+	max-width: 46ch;
+	text-transform: none;
+	letter-spacing: var(--tr-normal);
+	line-height: var(--lh-snug);
+}
+
 .prose li + li {
 	margin-top: var(--s-2);
 }

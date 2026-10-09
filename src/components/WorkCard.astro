@@ -14,7 +14,7 @@ interface Props {
 
 const { entry, emphasis = false } = Astro.props;
 const { title, blurb, year, role, thumbnail, video, tags } = entry.data;
-const href = `/work/${entry.id}/`;
+const href = `/projects/${entry.id}/`;
 ---
 
 <article class:list={['card', { 'card--emphasis': emphasis }]}>

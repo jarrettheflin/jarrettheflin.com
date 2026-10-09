@@ -29,7 +29,7 @@ interface Props {
 const { entry, index, recedeFrom, recedeTo, mediaFrom, mediaTo } =
 	Astro.props;
 const { title, blurb, thumbnail, coverVideo } = entry.data;
-const href = `/work/${entry.id}/`;
+const href = `/projects/${entry.id}/`;
 
 const hasCover = Boolean(coverVideo && coverVideo.length > 0);
 

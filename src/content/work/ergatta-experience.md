@@ -27,6 +27,10 @@ appealing to a market that was predominantly male, data-driven, and competitive.
 Collaborating with the awesome team at Ravie.co, I merged new animations with
 repurposed lifestyle B-roll to create a seamless story at a fraction of the cost.
 
+![](../../assets/work/ergatta-experience-trailer.jpg "Crew shooting lifestyle B-roll of a rower on an Ergatta rower in a sunlit living room")
+
+![](../../assets/work/ergatta-experience-shoot.jpg "Camera operator on a gimbal tracking alongside a rower mid-stroke on set")
+
 Truly a new backbone of Ergatta's digital presence, the trailer and its cutdown
 content yielded a 15% conversion increase in paid prospecting campaigns, 70%
 higher click-through rates, and an 8% lower customer acquisition cost.

@@ -8,7 +8,8 @@ tags: [Launch, Product Marketing, Video]
 # Silent 16:9 cutdown, any length. See README.md.txt for the export spec.
 # coverVideo: ['/work/ergatta-lite-launch.mp4']
 
-# 3:2 source; the 16:9 frame crops ~11% and the monitor just clears the top.
+# 4:3 source; the card's 16:9 frame takes ~25% off the height. The Lite sits
+# low and centred, so the crop lands on ceiling and floor rather than on it.
 thumbnail: ../../assets/work/ergatta-lite-launch.jpg
 
 # Full-length cut — a Vimeo or YouTube URL, not a file.
