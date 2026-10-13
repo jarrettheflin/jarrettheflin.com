@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
+import { SHOW_ROLE_AND_TAGS } from '../consts';
 
 /**
  * One card design, reused for every project on the grid and nowhere
@@ -52,20 +53,24 @@ const href = `/projects/${entry.id}/`;
 		<div class="card__body">
 			<h3 class="card__title">{title}</h3>
 			<p class="card__blurb">{blurb}</p>
-			<p class="meta card__meta">
-				{year && <span>{year}</span>}
-				{year && (
-					<span class="card__dot" aria-hidden="true">
-						·
-					</span>
-				)}
-				<span>{role}</span>
-			</p>
+			{
+				(year || SHOW_ROLE_AND_TAGS) && (
+					<p class="meta card__meta">
+						{year && <span>{year}</span>}
+						{year && SHOW_ROLE_AND_TAGS && (
+							<span class="card__dot" aria-hidden="true">
+								·
+							</span>
+						)}
+						{SHOW_ROLE_AND_TAGS && <span>{role}</span>}
+					</p>
+				)
+			}
 		</div>
 	</a>
 
 	{
-		tags.length > 0 && (
+		SHOW_ROLE_AND_TAGS && tags.length > 0 && (
 			<ul class="card__tags" aria-label="Tags">
 				{tags.map((tag) => (
 					<li class="meta card__tag">{tag}</li>

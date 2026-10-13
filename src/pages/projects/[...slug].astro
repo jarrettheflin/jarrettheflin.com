@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import Base from '../../layouts/Base.astro';
 import Footer from '../../components/Footer.astro';
 import VideoEmbed from '../../components/VideoEmbed.astro';
+import { SHOW_ROLE_AND_TAGS } from '../../consts';
 import { getWorkEntries } from '../../lib/work';
 import type { WorkEntry } from '../../lib/work';
 
@@ -61,12 +62,16 @@ const { Content } = await render(entry);
 							</div>
 						)
 					}
-					<div class="project__fact">
-						<dt class="meta">Role</dt>
-						<dd>{role}</dd>
-					</div>
 					{
-						tags.length > 0 && (
+						SHOW_ROLE_AND_TAGS && (
+							<div class="project__fact">
+								<dt class="meta">Role</dt>
+								<dd>{role}</dd>
+							</div>
+						)
+					}
+					{
+						SHOW_ROLE_AND_TAGS && tags.length > 0 && (
 							<div class="project__fact">
 								<dt class="meta">Tags</dt>
 								<dd>{tags.join(', ')}</dd>

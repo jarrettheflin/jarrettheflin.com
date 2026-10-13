@@ -48,3 +48,12 @@ export const SITE = {
 export const LINKS = [
 	{ label: 'LinkedIn', href: 'https://www.linkedin.com/in/jheflin' },
 ] as const;
+
+/**
+ * Whether a project's `role` and `tags` render — on the /projects/ grid cards
+ * and in the facts block on each project page. Hidden for now at Jarrett's
+ * request; the frontmatter is untouched, so flipping this back to `true`
+ * restores both everywhere with no other edit. (The homepage stack cards
+ * never showed either.)
+ */
+export const SHOW_ROLE_AND_TAGS = false;
