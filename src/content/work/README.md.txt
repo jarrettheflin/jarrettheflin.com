@@ -130,6 +130,19 @@ Figures render narrower than the text column and leave a wide gap above and
 below, which is what keeps them reading as pictures *in* the piece rather than
 as section breaks. Nothing to space by hand.
 
+### Full-width pictures
+
+A picture followed by text floats beside it. To run one across the full text
+column instead, end the caption with `| wide` — it's stripped from the caption:
+
+```markdown
+![Vallée Blanche, Chamonix | wide](../../assets/work/shot.jpg)
+![| wide](../../assets/work/shot.jpg)                  wide, no caption
+```
+
+It works on a side-by-side pair too: flag either picture and the pair spans
+the column, with text stopping above and below. On a phone the two stack.
+
 ### Captions
 
 **The text in the square brackets is the caption.** Leave it empty and there

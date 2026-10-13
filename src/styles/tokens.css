@@ -106,6 +106,14 @@
 	--measure: 34rem; /* comfortable reading width for prose */
 	--container: 72rem;
 	--gutter: clamp(1.25rem, 0.75rem + 3vw, 4rem);
+	/* Project-page pictures in the write-up, all well inside the container
+	   so they sit in the copy rather than dominating it. --figure-w is
+	   mirrored as a pixel width in src/lib/figures.js; change them together. */
+	--figure-w: 32rem; /* inline figures in a write-up */
+	--figure-row-w: 44rem; /* a pair of figures side by side */
+	--figure-tall-h: 32rem; /* height cap, so a portrait shot can't tower */
+	--figure-float-w: 18rem; /* a figure the text wraps around */
+	--figure-float-row-w: 30rem; /* a pair the text wraps around */
 
 	/* ---- Form ------------------------------------------------------------ */
 	--radius-sm: 2px;

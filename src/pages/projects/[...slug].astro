@@ -176,8 +176,15 @@ const { Content } = await render(entry);
 		margin-top: var(--s-7);
 	}
 
+	/* Full width, in the same 16:9 frame as a lead video and the homepage
+	   card, so every project opens on the same shape. A portrait still is
+	   cropped from the centre — exactly what its card already shows — rather
+	   than standing at full width taller than two screens. The write-up's
+	   pictures float and wrap; this one deliberately doesn't. */
 	.project__image {
 		width: 100%;
+		aspect-ratio: 16 / 9;
+		object-fit: cover;
 		border: var(--hairline) solid var(--c-rule);
 		border-radius: var(--radius);
 	}
@@ -198,6 +205,12 @@ const { Content } = await render(entry);
 	.project__prose {
 		max-width: none;
 		margin-top: var(--s-7);
+	}
+
+	.project__prose::after {
+		content: '';
+		display: block;
+		clear: both;
 	}
 
 	.project__external {

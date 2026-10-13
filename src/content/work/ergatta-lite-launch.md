@@ -30,14 +30,14 @@ a larger, more competitive consumer base with a lower upfront cost. Working in
 tight coordination with the product, engineering, and physical engineering teams,
 we created the Ergatta Lite from scratch in six months.
 
+![](../../assets/work/ergatta-lite-launch-cnn.png "Lifestyle shoot in progress — a gimbal operator framing the shot on a monitor, the Lite against a weathered studio wall behind")
+
 Leading the campaign end-to-end, I set up two shoots for studio and lifestyle
 content and unveiled a wider marketing strategy that re-envisioned Ergatta's
 website and its paid and organic presence, shifting from a one-product company to
 a multi-product brand with bundles, add-ons, and up-value opportunities. In the
 months leading up to launch, I hosted editors at the MADE Hotel in Flatiron for a
 demo week, where I negotiated placements and landed an exclusive story.
-
-![](../../assets/work/ergatta-lite-launch-cnn.png "Lifestyle shoot in progress — a gimbal operator framing the shot on a monitor, the Lite against a weathered studio wall behind")
 
 ![](../../assets/work/ergatta-lite-launch-demo-week.jpg "An editor trying the Lite during demo week while talking with a colleague")
 

@@ -212,8 +212,6 @@ a:hover {
      `margin-bottom` too: consecutive figures need the same air as a figure
      against a paragraph. */
 .prose .figure {
-	--figure-w: 42rem;
-
 	width: min(var(--figure-w), 100%);
 	margin-top: var(--s-8);
 	margin-bottom: var(--s-8);
@@ -227,6 +225,113 @@ a:hover {
 	width: 100%;
 	border: var(--hairline) solid var(--c-rule);
 	border-radius: var(--radius);
+}
+
+/* A portrait shot at the full figure width would stand taller than a
+   screen. `width: auto` lets the height cap win and the width follow from
+   the aspect ratio; a landscape image never reaches the cap, and its width
+   attribute (2× the box) is clamped to the column by the global
+   `max-width: 100%`, so it still fills the figure exactly as before. */
+.prose .figure > img {
+	width: auto;
+	max-height: var(--figure-tall-h);
+}
+
+/* `| wide` in the caption slot (figures.js): the full prose column, with
+   neither the --figure-w cap nor the portrait height cap. Excluded from the
+   float rules below rather than overriding them, so it stays a plain block. */
+.prose .figure--wide {
+	width: 100%;
+}
+
+.prose .figure--wide > img {
+	width: 100%;
+	max-height: none;
+}
+
+/* Two or more images on consecutive markdown lines — see figures.js. Equal
+   columns, so pair shots of the same shape. Folds to one column when a
+   phone can't give each picture a useful width. */
+.prose .figure-row {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
+	gap: var(--s-5);
+	width: min(var(--figure-row-w), 100%);
+	margin-top: var(--s-8);
+	margin-bottom: var(--s-8);
+}
+
+.prose .figure-row--wide {
+	width: 100%;
+}
+
+/* Fill each half, portraits included: under the --figure-tall-h cap a
+   portrait would shrink narrower than its column and leave the pair ragged. */
+.prose .figure-row--wide > .figure > img {
+	width: 100%;
+	max-height: none;
+}
+
+.prose .figure-row > .figure {
+	width: auto;
+	margin: 0;
+}
+
+.prose .figure-row:last-child {
+	margin-bottom: 0;
+}
+
+/* Text wraps around pictures. A figure directly followed by a paragraph
+   floats, alternating right and left down the page, so the copy runs
+   beside it and on underneath it rather than stopping for it. Everything
+   else stays a block: a figure followed by another figure or by nothing
+   (floating it would leave it hanging beside no text), a provider player
+   (it's there to be watched, and needs the width) and a `| wide` figure. A row followed by a
+   paragraph floats too (unless it's `| wide`), as one unit, always left: it's counted as a `div`,
+   not a `figure`, so it can't join the alternation below.
+
+   Nothing clears. A block that cleared every float above it would leave a
+   hole wherever a picture outlasts its text — the gap this replaced. As a
+   formatting context instead (a row's grid is one already; `flow-root`
+   makes a lone figure one), a block sits beside a float when it fits and
+   drops below it on its own when it doesn't, and paragraphs simply keep
+   flowing around whatever is still floating.
+
+   Only from 48rem up — below that a float would leave the text a column a
+   few words wide. The margin-top matches the paragraph gap, so the picture
+   starts level with the first line it sits beside. `.project__prose` clears
+   the last float so it can't hang into the footer. */
+@media (min-width: 48rem) {
+	.prose > .figure {
+		display: flow-root;
+	}
+
+	.prose > .figure:not(.figure--wide):has(+ p):not(:has(> .figure__video)) {
+		/* Its own side only. Clearing both pushes a float below one on the
+		   other side, leaving a hole beside it, and the paragraph it belongs
+		   to then runs on above it. Clearing its own side keeps two floats
+		   on one side from stacking into a staircase. */
+		float: right;
+		clear: right;
+		width: min(var(--figure-float-w), 45%);
+		margin: var(--s-5) 0 var(--s-5) var(--s-6);
+	}
+
+	.prose > .figure:not(.figure--wide):has(+ p):not(:has(> .figure__video)):nth-of-type(even) {
+		float: left;
+		clear: left;
+		margin: var(--s-5) var(--s-6) var(--s-5) 0;
+	}
+
+	/* Two fixed columns: at float width the row's auto-fit would fold the
+	   pair into one. The row's own gap keeps the space between them. */
+	.prose > .figure-row:not(.figure-row--wide):has(+ p) {
+		float: left;
+		clear: left;
+		grid-template-columns: 1fr 1fr;
+		width: min(var(--figure-float-row-w), 60%);
+		margin: var(--s-5) var(--s-6) var(--s-5) 0;
+	}
 }
 
 /* A provider embed inside a figure. Same frame as the project page's lead
