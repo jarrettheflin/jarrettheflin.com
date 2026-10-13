@@ -27,7 +27,7 @@ const work = defineCollection({
 			// from `video`, which is the shareable embed on the detail page.
 			//
 			// Self-hosted, because Astro's asset pipeline cannot optimize video:
-			// drop files in `public/work/` and reference them root-relative.
+			// drop files in `public/video/` and reference them root-relative.
 			// Best codec first — these become <source> elements in order, so put
 			// .webm ahead of .mp4.
 			//

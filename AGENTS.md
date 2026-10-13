@@ -15,7 +15,10 @@ label reads Projects; the collection, `src/content/work/`, `src/lib/work.ts`
 and the `Work*` components kept their names, because renaming them moves every
 content file and buys nothing a visitor can see. The route moved, so
 `astro.config.mjs` carries `redirects` from `/work` and `/work/[...slug]` —
-links shared before the rename still resolve. Don't drop them.
+links shared before the rename still resolve. Don't drop them. They also mean
+**nothing static can live under `public/work/`**: `/work/[...slug]` matches
+`/work/clip.mp4` too and 301s it to a 404. Clips live in `public/video/`; that
+collision is what froze every homepage cover on its poster after the rename.
 
 **Almost entirely static.** `output` stays at its default `'static'` and every
 page prerenders. There is exactly one on-demand route — `src/pages/api/agent.ts`,

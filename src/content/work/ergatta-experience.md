@@ -7,7 +7,7 @@ tags: [Product Marketing, Video, Games]
 
 # Silent 17s loop, 00:20–00:37. 960x540 — the highest rendition Vimeo holds
 # for this video. A 1080p master would sharpen it on Retina screens.
-coverVideo: ['/work/ergatta-experience.mp4']
+coverVideo: ['/video/ergatta-experience.mp4']
 
 # Doubles as the cover's poster frame, and is not optional in practice: without
 # it a card is a black rectangle until the browser decides to autoplay, which

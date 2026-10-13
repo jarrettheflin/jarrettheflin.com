@@ -46,4 +46,4 @@ the boat in the end, rowing the two-seat, and placing fourth internationally.
 
 ![](../../assets/work/rowings-journey-u23-camp.jpg "Four lightweight rowers with oars outside the Princeton training center")
 
-![](/work/rowings-journey-single.mp4)
+![](/video/rowings-journey-single.mp4)

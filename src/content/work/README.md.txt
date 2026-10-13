@@ -16,7 +16,7 @@ role: Director, Editor
 tags: [Video, Brand]
 thumbnail: ../../assets/work/spondi-brand-film.jpg  # optional
 video: https://vimeo.com/123456789                 # optional
-coverVideo: ['/work/spondi.webm', '/work/spondi.mp4']  # optional
+coverVideo: ['/video/spondi.webm', '/video/spondi.mp4']  # optional
 link: https://example.com                          # optional
 featured: false
 order: 1          # optional; lower sorts first
@@ -39,7 +39,7 @@ The write-up goes here, in markdown. Headings, bold, lists, and links all work.
   link, `youtu.be`, or an unlisted Vimeo link with its hash). It gets converted
   to an embed automatically.
 - **`coverVideo`** — one or two root-relative paths to self-hosted files in
-  `public/work/`, best codec first (`.webm` before `.mp4`). This is the
+  `public/video/`, best codec first (`.webm` before `.mp4`). This is the
   **silent looping cover** for the card in the homepage stack — a different job
   from `video`, which is the full-length embed on the project page. Astro can't
   optimize video, which is why these live in `public/` rather than
@@ -59,7 +59,7 @@ The write-up goes here, in markdown. Headings, bold, lists, and links all work.
   the mp4 so the still and the first frame can't disagree:
 
   ```sh
-  ffmpeg -ss 6 -i public/work/<slug>.mp4 -frames:v 1 -q:v 2 \
+  ffmpeg -ss 6 -i public/video/<slug>.mp4 -frames:v 1 -q:v 2 \
     src/assets/work/<slug>.jpg
   ```
 
@@ -69,7 +69,7 @@ The write-up goes here, in markdown. Headings, bold, lists, and links all work.
   ### Export spec for a cover
 
   Name the file by slug (`coach-ai.mp4` for `coach-ai.md`) and drop it in
-  `public/work/`.
+  `public/video/`.
 
   - **1920×1080, exactly 16:9.** The card frames at 16:9 with
     `object-fit: contain`, so nothing crops — but anything off-ratio gets
@@ -99,7 +99,7 @@ The write-up goes here, in markdown. Headings, bold, lists, and links all work.
   ```sh
   ffmpeg -i source.mov -ss 00:00:00 -t 8 -an \
     -vf "scale=1920:-2" -c:v libx264 -crf 24 -preset slow -pix_fmt yuv420p \
-    -movflags +faststart public/work/<slug>.mp4
+    -movflags +faststart public/video/<slug>.mp4
   ```
 
   (`-an` is what strips the audio.)
@@ -157,11 +157,11 @@ form for images that carry no caption but still need describing.
 
 ### Clips
 
-Point at an `.mp4` or `.webm` in `public/work/` instead and you get a silent
+Point at an `.mp4` or `.webm` in `public/video/` instead and you get a silent
 looping clip in the same frame, captioned the same way:
 
 ```markdown
-![](/work/kaepernick-ergatta-set.mp4)
+![](/video/kaepernick-ergatta-set.mp4)
 ```
 
 Root-relative, not a relative path — Astro can't optimize video, so these live

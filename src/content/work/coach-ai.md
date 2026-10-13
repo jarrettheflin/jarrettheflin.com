@@ -6,7 +6,7 @@ role: Product Marketing, Film Production
 tags: [Product Marketing, AI, Video]
 
 # Silent 7s loop, 00:01–00:08, cut from the 1080p YouTube source.
-coverVideo: ['/work/coach-ai.mp4']
+coverVideo: ['/video/coach-ai.mp4']
 
 # Doubles as the cover video's poster frame.
 thumbnail: ../../assets/work/coach-ai.jpg

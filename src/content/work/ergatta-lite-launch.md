@@ -6,7 +6,7 @@ role: Campaign Lead
 tags: [Launch, Product Marketing, Video]
 
 # Silent 16:9 cutdown, any length. See README.md.txt for the export spec.
-# coverVideo: ['/work/ergatta-lite-launch.mp4']
+# coverVideo: ['/video/ergatta-lite-launch.mp4']
 
 # 4:3 source; the card's 16:9 frame takes ~25% off the height. The Lite sits
 # low and centred, so the crop lands on ceiling and floor rather than on it.

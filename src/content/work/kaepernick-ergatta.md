@@ -6,7 +6,7 @@ role: Campaign Lead, Production
 tags: [Brand, Partnership, Video]
 
 # Silent 8s loop, 00:28–00:36, cut from the 1080p ProRes master.
-coverVideo: ['/work/kaepernick-ergatta.mp4']
+coverVideo: ['/video/kaepernick-ergatta.mp4']
 
 # Doubles as the cover's poster frame. Path is relative to this file. Not
 # optional in practice: without it a card is a black rectangle until the
@@ -36,7 +36,7 @@ an apartment scene and suspended a 10,000 lb LED screen over a 40' x 40'
 reflection pool to bridge a pathway between the digitally rendered gameplay and
 Colin's surroundings.
 
-![](/work/kaepernick-ergatta-set.mp4)
+![](/video/kaepernick-ergatta-set.mp4)
 
 We executed this campaign across paid and earned media channels, inevitably
 angering a few Kaepernick non-supporters but, most importantly, galvanizing our

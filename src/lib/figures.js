@@ -10,7 +10,7 @@
  *   ![](../../assets/work/shot.jpg)              → figure, no caption
  *   ![On set in Simi Valley](../../assets/work/shot.jpg)
  *                                                → figure + <figcaption>
- *   ![](/work/clip.mp4)                          → silent looping <video>
+ *   ![](/video/clip.mp4)                         → silent looping <video>
  *   ![](https://youtu.be/<id>)                   → lazy 16:9 player, with sound
  *
  * The last of those is the odd one out and the distinction is worth keeping:
