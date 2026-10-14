@@ -155,11 +155,17 @@ SVG favicon, so the tab icon no longer follows the OS theme: it is one flat
 artwork, which is what a logo should be. Re-export all four from the 1000px
 source if the mark changes.
 
-**Client-side JS exists in exactly one place:** the inline script in
+**Our own client-side JS exists in exactly one place:** the inline script in
 `src/components/AgentWidget.astro`, rendered on the homepage only. It is
 deliberately vanilla — no React/Vue/Svelte — so one component doesn't put a
-framework runtime on every page. Project pages ship zero JS. Don't add a UI
-framework for the widget's sake.
+framework runtime on every page. Don't add a UI framework for the widget's sake.
+
+The only other script is **Google Analytics 4** (`G-HMDZVCNF05`), in the
+`<head>` of `src/layouts/Base.astro` so it runs on every page. Both tags must
+keep `is:inline`, or Astro bundles them and the snippet breaks. Per-page
+visit counts rely on each navigation being a full page load. If a client-side
+router (`<ClientRouter />`) is ever added, GA will only record the first page
+of a visit unless `page_view` is sent manually on `astro:page-load`.
 
 That script binds **every** element on the page carrying `[data-agent-open]`,
 not just its own orb. That is how the hero's "Get in touch" button opens the chat
