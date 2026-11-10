@@ -1,6 +1,6 @@
 ---
-title: Starting Up Press Relations
-blurb: Creating a PR function for an emerging brand
+title: Building a Press Engine
+blurb: Creating a PR function from zero for an emerging brand
 year: 2020
 role: Press & Communications
 tags: [Press, Brand, Events]
@@ -13,20 +13,26 @@ order: 4
 draft: false
 ---
 
-Press relations, well, by definition, is a relationship game. And in the startup
-world, no one has time for that.
+Over 250 press placements, from the New York Times to Rolling Stone, don't come
+from one great pitch. They come from a press function run like a launch calendar
+and built around one idea: get writers on the rower. Sometimes that meant
+carrying one up their stairs.
 
-Nor money — unless there's a player in an adjacent
-category who has the funds to pay for placements and the willingness to give
-affiliate writers whatever they need to put top brass on the review. In that
-case, setting up a PR function doesn't take as much time as you think.
+Our first hits came from editors already covering our primary competitor. From
+there, every new product and every integration, with Apple Watch, Strava,
+Peloton, and iFit, launched through press, with a press kit built from our studio
+and lifestyle shoots.
 
-I've had the privilege of earning Ergatta over 250 placements across the New York
-Times, the Wall Street Journal, Forbes, Bloomberg, Rolling Stone, and Time
-magazine.
+Then I got editors on the machine. Deep in the pandemic, I ran our first socially
+distanced press junket at the EDITION hotel in New York, from the editor list to
+the demos to the follow-up. For the Ergatta Lite, a week of editor demos at the
+MADE Hotel in Flatiron landed a CNN Underscored exclusive. In between, I ran demos
+at CES and industry conferences.
 
-At first, I targeted editors who covered our primary competitor, scoring easy
-hits and building relationships with writers who only had to update their reviews
-with additional options for consideration. Then I had to take an outbound
-approach: hosting press events, running CES activations, and sending messaging to
-an ever-growing journalist CRM.
+Between launches, I kept those relationships warm, reaching at least 50
+hand-picked contacts a month through a journalist CRM, in step with our product
+marketing cadence: pitches from me, and founder-level notes from our CEO.
+
+Celebrities and screens gave writers even more to cover: partnerships with Colin
+Kaepernick and celebrity trainer Don Saladino, placements with Joe Jonas, Tom
+Holland, and Jennifer Lawrence, and on-screen spots in Dumb Money and Bel-Air.
