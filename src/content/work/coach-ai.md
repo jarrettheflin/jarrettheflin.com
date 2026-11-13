@@ -53,7 +53,7 @@ review I sourced and pitched myself.
 We expected beginners to adopt it first. Holdout cohorts showed moderate rowers
 did, which turned out to be better news. More members crossed our
 three-sessions-a-week threshold, the lapsed-member campaign lifted reactivations
-more than 20%, and Coach AI helped grow referrals from 5% to more than 20% of
-monthly sales. So we shifted messaging toward moderate rowers, launched a
+more than 20%, and Coach AI helped grow referrals to greater than 20% of
+monthly sales. So I shifted messaging toward moderate rowers, launched a
 give-and-get referral offer, and put the video library in the companion app so
 members could show it off away from home.

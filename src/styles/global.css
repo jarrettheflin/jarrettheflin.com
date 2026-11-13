@@ -422,3 +422,16 @@ a:hover {
 		scroll-behavior: auto !important;
 	}
 }
+
+/* Ergatta Experience: the portrait trailer shot would otherwise reach down
+   into the last paragraph and squeeze it into a narrow column, and the gimbal
+   shot beside that paragraph is taller than its text. Both run a bit smaller
+   so the closing paragraph wraps as one even block. */
+@media (min-width: 48rem) {
+	.prose > .figure:not(.figure--wide):has(+ p):not(:has(> .figure__video)):has(img[alt^='Crew shooting lifestyle B-roll']) {
+		width: min(15rem, 32%);
+	}
+	.prose > .figure:not(.figure--wide):has(+ p):not(:has(> .figure__video)):has(img[alt^='Camera operator on a gimbal']) {
+		width: min(16rem, 34%);
+	}
+}
