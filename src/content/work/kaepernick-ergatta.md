@@ -45,5 +45,5 @@ recut the spots as results came in. It inevitably angered a few Kaepernick
 non-supporters but, most importantly, galvanized our core market and doubled
 November–December sales year over year.
 
-![](../../assets/work/kaepernick-ergatta-greenscreen.jpg "The apartment set under construction against a green screen")
+![ | wide](../../assets/work/kaepernick-ergatta-greenscreen.jpg "The apartment set under construction against a green screen")
 ![](../../assets/work/kaepernick-ergatta-billboard.jpg "A Game On billboard on a street corner at sunset")
