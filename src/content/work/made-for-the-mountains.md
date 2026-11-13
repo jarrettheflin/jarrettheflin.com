@@ -11,7 +11,7 @@ tags: [Photography, Personal]
 thumbnail: ../../assets/work/made-for-the-mountains.jpg
 
 featured: false
-order: 9
+order: 10
 draft: false
 ---
 
@@ -29,10 +29,9 @@ our history.
 ![Mount Hood, OR — giant slalom | wide](../../assets/work/made-for-the-mountains-mount-hood.jpg "Racer leaning into a giant slalom gate, a rock face rising behind the course")
 
 Along the way, I went to my first Mount Hood summer camp, a kid on a glacier in
-July, and discovered the world of brand demos. I thought I was in a dream. Trying
-out two new pairs of skis for free every day?
+July, and discovered the world of brand demos. I thought I was in a dream.
 
-![Sled practice at Jiminy Peak, MA](/video/made-for-the-mountains-jiminy.mp4)
+![Sled practice at Jiminy Peak, MA | small](/video/made-for-the-mountains-jiminy.mp4)
 
 I fell in love with the nuances of ski design and construction, so much so that I
 apprenticed at Gear West under a US Paralympic ski tuner. Once I had the skills
@@ -43,11 +42,7 @@ At Williams College, I joined the ski patrol and ski school at Jiminy Peak,
 becoming a certified National Ski Patroller while teaching college students to ski
 and training new instructors.
 
-![Vallée Blanche, Chamonix | wide](../../assets/work/made-for-the-mountains-vallee-blanche.jpg "Skier standing on the glacier floor, granite spires and seracs rising on every side")
-
-I've skied most of the brands on the wall, and I'm still the friend people text
-before they buy a ski, or when their edges need work. The tuning business may
-never fully close.
+![My wife Madeline in Vallée Blanche, Chamonix | wide](../../assets/work/made-for-the-mountains-vallee-blanche.jpg "Skier standing on the glacier floor, granite spires and seracs rising on every side")
 
 These days, I have the great joy of spending winter weekends in the mountains with
 my wife, who grew up skiing at Kirkwood, and our 1-year-old golden retriever, Loon.

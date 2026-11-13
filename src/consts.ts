@@ -23,7 +23,7 @@ export const SITE = {
 	 * paraphrase. Keep under ~155 characters or Google truncates it.
 	 */
 	description:
-		'Creating the stories and systems that get products in front of the right people.',
+		'I turn technical products into launches people remember, then build the systems that keep them selling.',
 	/** Must match `site` in astro.config.mjs. */
 	url: 'https://www.jarrettheflin.com',
 	/**

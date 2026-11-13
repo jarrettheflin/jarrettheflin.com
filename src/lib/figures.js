@@ -85,6 +85,8 @@ const VIDEO_EXT = /\.(webm|mp4)$/i;
 
 /** `![Caption | wide](…)` — see toFigure. */
 const WIDE_FLAG = /\s*\|\s*wide\s*$/i;
+/** `![Caption | small](…)`: a narrower figure (--figure-small-w), floated or not. */
+const SMALL_FLAG = /\s*\|\s*small\s*$/i;
 
 function mimeFor(src) {
 	return src.toLowerCase().endsWith('.webm') ? 'video/webm' : 'video/mp4';
@@ -153,7 +155,8 @@ function toFigure(img, inRow = false) {
 	// text: the figure spans the full prose column and never floats.
 	const rawCaption = typeof props.alt === 'string' ? props.alt.trim() : '';
 	const wide = !inRow && WIDE_FLAG.test(rawCaption);
-	const caption = rawCaption.replace(WIDE_FLAG, '').trim();
+	const small = !inRow && !wide && SMALL_FLAG.test(rawCaption);
+	const caption = rawCaption.replace(WIDE_FLAG, '').replace(SMALL_FLAG, '').trim();
 	const alt = typeof props.title === 'string' ? props.title : '';
 
 	/* A provider URL, before the file branches: those test the
@@ -299,7 +302,9 @@ function toFigure(img, inRow = false) {
 	return {
 		type: 'element',
 		tagName: 'figure',
-		properties: { className: wide ? ['figure', 'figure--wide'] : ['figure'] },
+		properties: {
+			className: wide ? ['figure', 'figure--wide'] : small ? ['figure', 'figure--small'] : ['figure'],
+		},
 		children,
 	};
 }

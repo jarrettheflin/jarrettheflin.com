@@ -161,10 +161,15 @@ const href = `/projects/${entry.id}/`;
 
 	.card__title {
 		font-size: var(--t-lg);
+		transition:
+			color var(--dur-fast) ease,
+			text-shadow var(--dur-fast) ease;
 	}
 
-	.card__link:hover .card__title {
+	.card__link:hover .card__title,
+	.card__link:focus-visible .card__title {
 		color: var(--c-accent);
+		text-shadow: var(--title-glow);
 	}
 
 	.card__blurb {

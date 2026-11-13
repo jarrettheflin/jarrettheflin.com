@@ -19,7 +19,7 @@ thumbnail: ../../assets/work/ergatta-experience.jpg
 video: https://vimeo.com/846670219
 
 featured: false
-order: 2
+order: 4
 draft: false
 ---
 

@@ -228,8 +228,9 @@ grep -rilF "$CONTACT_EMAIL" dist/ .vercel/output/static/
 grep -rilF "${CONTACT_EMAIL%%@*}" dist/ .vercel/output/static/
 # Any address at all, obfuscated or not.
 grep -ril  "mailto:" dist/ .vercel/output/static/
-# Removed at Jarrett's request.
-grep -ril  "github.com/jarrettheflin" dist/ .vercel/output/static/
+# Removed at Jarrett's request. One approved exception (2026-11-12): the
+# public Devin wiki for immune.fit, linked from the immune.fit project page.
+grep -rio "github.com/jarrettheflin[^\"'<) ]*" dist/ .vercel/output/static/ | grep -v "github.com/jarrettheflin/immune-fit-Devin-Wiki"
 ```
 
 `.vercel/output/functions/` is the *server* bundle and is never sent to a

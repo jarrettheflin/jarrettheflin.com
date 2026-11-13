@@ -17,8 +17,8 @@ thumbnail: ../../assets/work/kaepernick-ergatta.jpg
 # Full-length cut — a Vimeo or YouTube URL, not a file.
 video: https://vimeo.com/645409929
 
-featured: true
-order: 1
+featured: false
+order: 2
 draft: false
 ---
 
@@ -38,8 +38,12 @@ Colin's surroundings.
 
 ![](/video/kaepernick-ergatta-set.mp4)
 
-We executed this campaign across paid and earned media channels, inevitably
-angering a few Kaepernick non-supporters but, most importantly, galvanizing our
-core market and doubling November–December sales year over year.
+"Game On" ran as a full campaign: Colin's film across paid and earned media,
+and a billboard series from a second shoot I produced at the same time in a New
+York studio, running in 11 cities. I wrote the ad copy, briefed the creative, and
+recut the spots as results came in. It inevitably angered a few Kaepernick
+non-supporters but, most importantly, galvanized our core market and doubled
+November–December sales year over year.
 
 ![](../../assets/work/kaepernick-ergatta-greenscreen.jpg "The apartment set under construction against a green screen")
+![](../../assets/work/kaepernick-ergatta-billboard.jpg "A Game On billboard on a street corner at sunset")

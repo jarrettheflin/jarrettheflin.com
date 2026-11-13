@@ -244,6 +244,11 @@ a:hover {
 	width: 100%;
 }
 
+/* `| small` in the caption slot (figures.js), when it isn't floated. */
+.prose .figure--small {
+	width: min(var(--figure-small-w), 100%);
+}
+
 .prose .figure--wide > img {
 	width: 100%;
 	max-height: none;
@@ -321,6 +326,12 @@ a:hover {
 		float: left;
 		clear: left;
 		margin: var(--s-5) var(--s-6) var(--s-5) 0;
+	}
+
+	/* `| small`: the same float, at the narrower width. The extra class
+	   outranks the width in the two rules above. */
+	.prose > .figure.figure--small:has(+ p):not(:has(> .figure__video)) {
+		width: min(var(--figure-small-w), 35%);
 	}
 
 	/* Two fixed columns: at float width the row's auto-fit would fold the

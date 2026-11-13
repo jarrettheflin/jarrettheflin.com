@@ -9,7 +9,7 @@ tags: [Photography, Personal]
 thumbnail: ../../assets/work/rowings-journey.jpg
 
 featured: false
-order: 8
+order: 9
 draft: false
 ---
 

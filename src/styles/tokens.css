@@ -112,8 +112,9 @@
 	--figure-w: 32rem; /* inline figures in a write-up */
 	--figure-row-w: 44rem; /* a pair of figures side by side */
 	--figure-tall-h: 32rem; /* height cap, so a portrait shot can't tower */
-	--figure-float-w: 18rem; /* a figure the text wraps around */
-	--figure-float-row-w: 30rem; /* a pair the text wraps around */
+	--figure-float-w: 22rem; /* a figure the text wraps around */
+	--figure-small-w: 14rem; /* `| small` in the caption slot, floated or not */
+	--figure-float-row-w: 36rem; /* a pair the text wraps around */
 
 	/* ---- Form ------------------------------------------------------------ */
 	--radius-sm: 2px;
@@ -148,6 +149,18 @@
 	--stack-peek: 0.875rem;
 	--stack-scale-step: 0.05;
 	--stack-media-zoom: 1.35;
+
+	/* The "More" cue on each stack card, drawn as a pill so it reads as the
+	   way in. Orange accent rather than the agent yellow, which stays reserved
+	   for the chat affordance. Solid accent on card hover. */
+	--more-fill: color-mix(in srgb, var(--c-accent) 18%, transparent);
+	--more-border: color-mix(in srgb, var(--c-accent) 60%, transparent);
+	--more-pad-y: 0.3em;
+	--more-pad-x: 0.85em;
+
+	/* Card headlines turn accent and pick up a soft glow while the card is
+	   hovered anywhere, not only over the title link itself. */
+	--title-glow: 0 0 0.6em color-mix(in srgb, var(--c-accent) 55%, transparent);
 
 	/* ---- Agent widget ----------------------------------------------------
 	   The yellow is a deliberate break from the cool palette above: a chat

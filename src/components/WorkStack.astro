@@ -133,6 +133,12 @@ const cards = entries.map((entry: WorkEntry, i: number) => ({
 		/* No z-index: sticky boxes at z-index auto paint in DOM order, which is
 		   exactly the stacking order wanted — and stays below the agent
 		   widget's z-index: 50. */
+		/* Each slot is a full-viewport, transparent box, and the next one in
+		   line overlaps the bottom of the card in front, which stole the
+		   hover and clicks from that card's text strip. The slot only does
+		   layout; the card inside turns pointer events back on
+		   (StackCard.astro). */
+		pointer-events: none;
 	}
 
 	.stack__empty {

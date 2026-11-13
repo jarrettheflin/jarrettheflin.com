@@ -9,7 +9,7 @@ tags: [Press, Brand, Events]
 thumbnail: ../../assets/work/pr-function.png
 
 featured: false
-order: 4
+order: 5
 draft: false
 ---
 

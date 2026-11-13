@@ -90,6 +90,9 @@ const hasCover = Boolean(coverVideo && coverVideo.length > 0);
 
 <style>
 	.scard {
+		/* Re-enabled here because the slot around it turns them off
+		   (WorkStack.astro). */
+		pointer-events: auto;
 		position: relative;
 		overflow: hidden;
 		background: var(--c-bg-raised);
@@ -219,8 +222,18 @@ const hasCover = Boolean(coverVideo && coverVideo.length > 0);
 		inset: 0;
 	}
 
-	.scard__link:hover {
+	/* The whole card is the hit area (the ::after overlay above), so the
+	   headline responds to hovering anywhere on it, not just on the words. */
+	.scard__link {
+		transition:
+			color var(--dur-fast) ease,
+			text-shadow var(--dur-fast) ease;
+	}
+
+	.scard:hover .scard__link,
+	.scard__link:focus-visible {
 		color: var(--c-accent);
+		text-shadow: var(--title-glow);
 	}
 
 	.scard__blurb {
@@ -236,13 +249,33 @@ const hasCover = Boolean(coverVideo && coverVideo.length > 0);
 		-webkit-line-clamp: 2;
 	}
 
+	/* A pill, so "More" reads as the way in rather than a stray label. Still
+	   aria-hidden and not focusable: the title link is the card's one tab
+	   stop, and its ::after overlay already covers this. */
 	.scard__more {
-		color: var(--c-ink);
+		align-self: flex-start;
 		flex-shrink: 0;
+		padding: var(--more-pad-y) var(--more-pad-x);
+		border: var(--hairline) solid var(--more-border);
+		border-radius: 999px;
+		background: var(--more-fill);
+		color: var(--c-ink);
+		line-height: 1;
+		transition:
+			background-color var(--dur-fast) ease,
+			color var(--dur-fast) ease;
+	}
+
+	@media (min-width: 48rem) {
+		.scard__more {
+			align-self: auto;
+		}
 	}
 
 	.scard:hover .scard__more {
-		color: var(--c-accent);
+		background: var(--c-accent);
+		border-color: var(--c-accent);
+		color: var(--c-accent-ink);
 	}
 
 	/* ---- Scroll-driven motion -------------------------------------------

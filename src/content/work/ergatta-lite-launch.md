@@ -8,8 +8,8 @@ tags: [Launch, Product Marketing, Video]
 # Silent 16:9 cutdown, any length. See README.md.txt for the export spec.
 # coverVideo: ['/video/ergatta-lite-launch.mp4']
 
-# 4:3 source; the card's 16:9 frame takes ~25% off the height. The Lite sits
-# low and centred, so the crop lands on ceiling and floor rather than on it.
+# Studio product shot on white, padded with white to 16:9 so the card's frame
+# shows the whole rower, monitor included, with nothing cropped.
 thumbnail: ../../assets/work/ergatta-lite-launch.jpg
 
 # Full-length cut — a Vimeo or YouTube URL, not a file.
@@ -35,7 +35,9 @@ we created the Ergatta Lite from scratch in six months.
 Leading the campaign end-to-end, I set up two shoots for studio and lifestyle
 content and unveiled a wider marketing strategy that re-envisioned Ergatta's
 website and its paid and organic presence, shifting from a one-product company to
-a multi-product brand with bundles, add-ons, and up-value opportunities. In the
+a multi-product brand with bundles, add-ons, and up-value opportunities. I wrote it all into a launch
+playbook (timeline, briefs, channel checklist, owners) that our small team
+reused for every release after. In the
 months leading up to launch, I hosted editors at the MADE Hotel in Flatiron for a
 demo week, where I negotiated placements and landed an exclusive story.
 
